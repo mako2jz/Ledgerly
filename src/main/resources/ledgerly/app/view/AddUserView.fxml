@@ -11,7 +11,7 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="ledgerly.app.controller.AddUserController"
       alignment="CENTER_LEFT" spacing="15"
-      styleClass="root" prefWidth="350">
+      styleClass="modal-root" prefWidth="350">
 
     <padding>
         <Insets top="20" right="30" bottom="20" left="30"/>

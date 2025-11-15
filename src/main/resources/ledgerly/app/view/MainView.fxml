@@ -4,30 +4,39 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="ledgerly.app.controller.MainController"
-      alignment="TOP_CENTER" spacing="15"
-      styleClass="root">
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="ledgerly.app.controller.MainController"
+           styleClass="root">
 
-    <padding>
-        <Insets top="60" right="50" bottom="50" left="50"/>
-    </padding>
+    <VBox alignment="TOP_CENTER" spacing="15" fx:id="mainContainer">
+        <padding>
+            <Insets top="60" right="50" bottom="50" left="50"/>
+        </padding>
 
-    <Label fx:id="titleLabel" text="Welcome to Ledgerly" styleClass="title-label"/>
-    <Label text="Select your profile to continue" styleClass="subtitle-label">
-        <VBox.margin>
-            <Insets bottom="20"/>
-        </VBox.margin>
+        <Label fx:id="titleLabel" text="Welcome to Ledgerly" styleClass="title-label"/>
+        <Label text="Select your profile to continue" styleClass="subtitle-label">
+            <VBox.margin>
+                <Insets bottom="20"/>
+            </VBox.margin>
+        </Label>
+
+        <ListView fx:id="userListView" VBox.vgrow="ALWAYS" maxHeight="300" accessibleText="User profiles list"/>
+
+        <Button fx:id="addButton" text="+ Add New User" onAction="#handleAddUserButtonAction" styleClass="add-button" maxWidth="Infinity">
+            <VBox.margin>
+                <Insets top="20"/>
+            </VBox.margin>
+        </Button>
+    </VBox>
+
+    <Label fx:id="toastLabel" styleClass="toast-label" text="User successfully added" visible="false" StackPane.alignment="BOTTOM_RIGHT">
+        <StackPane.margin>
+            <Insets bottom="20" right="20"/>
+        </StackPane.margin>
     </Label>
 
-    <ListView fx:id="userListView" VBox.vgrow="ALWAYS" maxHeight="300" accessibleText="User profiles list"/>
-
-    <Button fx:id="addButton" text="+ Add New User" onAction="#handleAddUserButtonAction" styleClass="add-button" maxWidth="Infinity">
-        <VBox.margin>
-            <Insets top="20"/>
-        </VBox.margin>
-    </Button>
-</VBox>
+</StackPane>

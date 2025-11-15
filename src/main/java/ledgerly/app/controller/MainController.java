@@ -1,9 +1,6 @@
 package ledgerly.app.controller;
 
-import javafx.animation.FadeTransition;
-import javafx.animation.Interpolator;
-import javafx.animation.ParallelTransition;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,8 +10,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import ledgerly.app.db.DatabaseManager;
 import ledgerly.app.model.User;
@@ -33,6 +33,12 @@ public class MainController {
 
     @FXML
     private Label titleLabel; // injected from FXML
+
+    @FXML
+    private VBox mainContainer;
+
+    @FXML
+    private Label toastLabel;
 
     @FXML
     public void initialize() {
@@ -79,6 +85,8 @@ public class MainController {
             dialogStage.setTitle("Add New User");
             dialogStage.initModality(Modality.APPLICATION_MODAL);
             dialogStage.initOwner(addButton.getScene().getWindow());
+            dialogStage.initStyle(StageStyle.UNDECORATED);
+
             Scene scene = new Scene(root);
 
             URL cssUrl = getClass().getResource("/ledgerly/app/css/styles.css");
@@ -88,16 +96,46 @@ public class MainController {
 
             dialogStage.setScene(scene);
             dialogStage.setResizable(false);
+
             dialogStage.showAndWait();
 
             String newUsername = controller.getUsername();
             if (newUsername != null && !newUsername.isEmpty()) {
                 DatabaseManager.addUser(newUsername);
                 loadUsers(); // Refresh the user list
+                showToast();
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showToast() {
+        toastLabel.setVisible(true);
+        toastLabel.setTranslateY(50); // Start below view
+        toastLabel.setOpacity(0);
+
+        TranslateTransition slideUp = new TranslateTransition(Duration.millis(400), toastLabel);
+        slideUp.setToY(0);
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(400), toastLabel);
+        fadeIn.setToValue(1);
+
+        ParallelTransition showTransition = new ParallelTransition(slideUp, fadeIn);
+
+        TranslateTransition slideDown = new TranslateTransition(Duration.millis(400), toastLabel);
+        slideDown.setToY(50);
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(400), toastLabel);
+        fadeOut.setToValue(0);
+
+        ParallelTransition hideTransition = new ParallelTransition(slideDown, fadeOut);
+        hideTransition.setOnFinished(e -> toastLabel.setVisible(false));
+
+        SequentialTransition sequentialTransition = new SequentialTransition(
+                showTransition,
+                new PauseTransition(Duration.seconds(3)),
+                hideTransition
+        );
+        sequentialTransition.play();
     }
 }
