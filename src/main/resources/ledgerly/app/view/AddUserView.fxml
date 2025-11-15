@@ -19,8 +19,8 @@
 
     <Label text="Add New User" styleClass="title-label" alignment="CENTER"/>
 
-    <VBox spacing="5">
-        <Label text="Username"/>
+    <VBox spacing="1">
+        <Label text="Username" styleClass="subtitle-label"/>
         <TextField fx:id="usernameField" promptText="Enter a username"/>
     </VBox>
 

@@ -82,3 +82,23 @@
 .cancel-button:hover {
     -fx-background-color: #cecece;
 }
+
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.thumb {
+    -fx-background-color: #00A859;
+    -fx-background-radius: 10;
+}
+
+.thumb:hover {
+    -fx-background-color: #008F4A;
+}
+
+.text-field {
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 8;
+    -fx-padding: 10 15 10 15;
+    -fx-border-color: transparent;
+}
