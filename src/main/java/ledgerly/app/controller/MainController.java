@@ -13,7 +13,7 @@ public class MainController {
 
     @FXML
     public void initialize() {
-        model.setData("Hello from the model!");
+        model.setData("Model test!");
         dataLabel.setText(model.getData());
     }
 
