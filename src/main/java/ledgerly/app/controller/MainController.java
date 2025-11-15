@@ -1,26 +1,29 @@
 package ledgerly.app.controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import ledgerly.app.model.SampleModel;
+import javafx.scene.control.ListView;
+import ledgerly.app.db.DatabaseManager;
+import ledgerly.app.model.User;
+
+import java.util.List;
 
 public class MainController {
 
     @FXML
-    private Label dataLabel;
-
-    private final SampleModel model = new SampleModel();
+    private ListView<User> userListView;
 
     @FXML
     public void initialize() {
-        model.setData("Model test!");
-        dataLabel.setText(model.getData());
-    }
+        // Set the custom cell factory to render User objects
+        userListView.setCellFactory(param -> new UserListCell());
 
-    @FXML
-    private void handleButtonClick() {
-        model.setData("Button clicked!");
-        dataLabel.setText(model.getData());
+        // Load users from the database
+        List<User> userList = DatabaseManager.getUsers();
+        ObservableList<User> observableUserList = FXCollections.observableArrayList(userList);
+
+        // Populate the ListView
+        userListView.setItems(observableUserList);
     }
 }
-
