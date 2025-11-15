@@ -23,9 +23,9 @@
         </VBox.margin>
     </Label>
 
-        <ListView fx:id="userListView" VBox.vgrow="ALWAYS" maxHeight="300" accessibleText="User profiles list"/>
+    <ListView fx:id="userListView" VBox.vgrow="ALWAYS" maxHeight="300" accessibleText="User profiles list"/>
 
-    <Button fx:id="addButton" text="+ Add New User" styleClass="add-button" maxWidth="Infinity">
+    <Button fx:id="addButton" text="+ Add New User" onAction="#handleAddUserButtonAction" styleClass="add-button" maxWidth="Infinity">
         <VBox.margin>
             <Insets top="20"/>
         </VBox.margin>

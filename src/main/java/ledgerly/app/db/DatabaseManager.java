@@ -11,7 +11,6 @@ public class DatabaseManager {
         String sql = "SELECT id, username FROM users";
         List<User> users = new ArrayList<>();
 
-        // Use the centralized getConnection method from the Database class
         try (Connection conn = Database.getConnection();
              Statement stmt  = conn.createStatement();
              ResultSet rs    = stmt.executeQuery(sql)) {
@@ -25,5 +24,17 @@ public class DatabaseManager {
             System.err.println("Error fetching users from database: " + e.getMessage());
         }
         return users;
+    }
+
+    public static void addUser(String username) {
+        String sql = "INSERT INTO users(username) VALUES(?)";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error adding user to database: " + e.getMessage());
+        }
     }
 }
