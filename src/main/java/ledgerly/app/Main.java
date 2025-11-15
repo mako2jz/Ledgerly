@@ -5,21 +5,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import ledgerly.app.db.Database;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Objects;
 
-import static ledgerly.app.db.Database.getConnection;
-
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
         try {
-            Connection conn = getConnection();
-            System.out.println("Database connection established.");
+            Connection conn = Database.getConnection();
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to connect to the database", e);
