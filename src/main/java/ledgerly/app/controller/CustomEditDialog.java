@@ -6,6 +6,8 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
+import java.util.Objects;
+
 public class CustomEditDialog extends Dialog<String> {
 
     private final TextField textField;
@@ -46,7 +48,7 @@ public class CustomEditDialog extends Dialog<String> {
         }
 
         getDialogPane().setContent(content);
-        getDialogPane().getStylesheets().add(getClass().getResource("/ledgerly/app/css/styles.css").toExternalForm());
+        getDialogPane().getStylesheets().add(Objects.requireNonNull(getClass().getResource("/ledgerly/app/css/styles.css")).toExternalForm());
         getDialogPane().getStyleClass().add("modal-root");
 
         // Return the text field's value when OK is pressed

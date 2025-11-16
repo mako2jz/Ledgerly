@@ -66,23 +66,6 @@
     -fx-background-color: #F5F5F5;
 }
 
-/* Ensure cells keep the rounded selected/focused appearance even when :filled is not present */
-.list-cell:selected,
-.list-cell:focused,
-.list-cell:selected:hover,
-.list-cell:focused:hover,
-.list-cell:filled:selected,
-.list-cell:filled:focused,
-.list-cell:filled:selected:hover,
-.list-cell:filled:focused:hover {
-    -fx-background-color: white;
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
-    -fx-border-color: #E0E0E0;
-    -fx-border-width: 1;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);
-}
-
 /* Keep pressed subtle but consistent */
 .list-cell:pressed,
 .list-cell:filled:pressed {
