@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ledgerly.app.controller.AddSaleController"
+      alignment="CENTER_LEFT" spacing="15"
+      styleClass="modal-root" prefWidth="400">
+
+    <padding>
+        <Insets top="20" right="30" bottom="20" left="30"/>
+    </padding>
+
+    <Label text="Add New Sale" styleClass="title-label" alignment="CENTER"/>
+
+    <VBox spacing="5">
+        <Label text="Product" styleClass="subtitle-label"/>
+        <ComboBox fx:id="productComboBox" promptText="Select a product" maxWidth="Infinity"/>
+    </VBox>
+
+    <VBox spacing="5">
+        <Label text="Amount (₱)" styleClass="subtitle-label"/>
+        <TextField fx:id="amountField" promptText="e.g., 150.75"/>
+    </VBox>
+
+    <VBox spacing="5">
+        <Label text="Description (Optional)" styleClass="subtitle-label"/>
+        <TextArea fx:id="descriptionArea" promptText="Enter a short description" prefHeight="80" wrapText="true"/>
+    </VBox>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Cancel" onAction="#handleCancel" styleClass="cancel-button"/>
+        <Button fx:id="addSaleButton" text="Add Sale" onAction="#handleAddSale" styleClass="add-button"/>
+    </HBox>
+</VBox>

@@ -20,6 +20,10 @@ public class User {
         return name.substring(0, 1).toUpperCase();
     }
 
+    public int getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return name;

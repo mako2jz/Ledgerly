@@ -1,0 +1,218 @@
+package ledgerly.app.controller;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.SVGPath;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import ledgerly.app.Main;
+import ledgerly.app.db.DatabaseManager;
+import ledgerly.app.model.Sale;
+import ledgerly.app.model.User;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class DashboardController {
+
+    private User currentUser;
+
+    @FXML
+    private Label sidebarUserLabel;
+    @FXML
+    private Label welcomeUserLabel;
+    @FXML
+    private Label totalSalesLabel;
+    @FXML
+    private Label numSalesLabel;
+    @FXML
+    private Label avgSaleLabel;
+    @FXML
+    private Button productsButton;
+    @FXML
+    private Button logoutButton;
+    @FXML
+    private Button addSaleButton; // New button
+    @FXML
+    private TableView<Sale> salesTableView;
+    @FXML
+    private TableColumn<Sale, String> dateColumn;
+    @FXML
+    private TableColumn<Sale, String> productColumn;
+    @FXML
+    private TableColumn<Sale, String> descriptionColumn;
+    @FXML
+    private TableColumn<Sale, Double> amountColumn;
+
+    public void initialize() {
+        productsButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/basket.svg", 16, Color.web("white")));
+        logoutButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/arrow-bar-left.svg", 16, Color.web("#333333")));
+    }
+
+    public void initData(User user) {
+        this.currentUser = user;
+        sidebarUserLabel.setText(currentUser.getName());
+        welcomeUserLabel.setText("Welcome, " + currentUser.getName());
+        loadDashboardData();
+    }
+
+    private void loadDashboardData() {
+        if (currentUser == null) return;
+
+        // Load sales data
+        List<Sale> sales = DatabaseManager.getSalesForUser(currentUser.getId());
+        ObservableList<Sale> observableSales = FXCollections.observableArrayList(sales);
+
+        // Populate stats
+        double totalSales = sales.stream().mapToDouble(Sale::getAmount).sum();
+        long numSales = sales.size();
+        double avgSale = (numSales > 0) ? totalSales / numSales : 0;
+
+        totalSalesLabel.setText(String.format("₱%.2f", totalSales));
+        numSalesLabel.setText(String.valueOf(numSales));
+        avgSaleLabel.setText(String.format("₱%.2f", avgSale));
+
+        // Populate table
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
+        productColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+        amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
+        salesTableView.setItems(observableSales);
+    }
+
+    @FXML
+    private void handleAddSaleButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ledgerly/app/view/AddSaleView.fxml"));
+            Parent root = loader.load();
+
+            AddSaleController controller = loader.getController();
+            controller.initData(currentUser);
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Add New Sale");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(addSaleButton.getScene().getWindow());
+            dialogStage.initStyle(StageStyle.UNDECORATED);
+
+            Scene scene = new Scene(root);
+            URL cssUrl = getClass().getResource("/ledgerly/app/css/styles.css");
+            if (cssUrl != null) {
+                scene.getStylesheets().add(cssUrl.toExternalForm());
+            }
+
+            dialogStage.setScene(scene);
+            dialogStage.setResizable(false);
+            dialogStage.showAndWait();
+
+            // If a sale was added, refresh the dashboard
+            if (controller.isSaleAdded()) {
+                loadDashboardData();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleProductsButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ledgerly/app/view/ProductView.fxml"));
+            Parent root = loader.load();
+
+            ProductController controller = loader.getController();
+            controller.initData(currentUser);
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Manage Products");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(productsButton.getScene().getWindow());
+            dialogStage.initStyle(StageStyle.UNDECORATED);
+
+            Scene scene = new Scene(root);
+            URL cssUrl = getClass().getResource("/ledgerly/app/css/styles.css");
+            if (cssUrl != null) {
+                scene.getStylesheets().add(cssUrl.toExternalForm());
+            }
+
+            dialogStage.setScene(scene);
+            dialogStage.setResizable(false);
+            dialogStage.showAndWait();
+
+            // Refresh sales data in case product names changed
+            loadDashboardData();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleLogoutButton() {
+        try {
+            Stage currentStage = (Stage) logoutButton.getScene().getWindow();
+            currentStage.close();
+
+            // Re-launch the main application window
+            Stage mainStage = new Stage();
+            new Main().start(mainStage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Node createSvgGraphic(String resourcePath, double targetSizePx, Color fill) {
+        try (InputStream is = getClass().getResourceAsStream(resourcePath)) {
+            if (is == null) {
+                System.err.println("Cannot find SVG resource: " + resourcePath);
+                return null;
+            }
+            String svg = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            Pattern pathPattern = Pattern.compile("(?i)d\\s*=\\s*['\"]([^'\"]+)['\"]");
+            Matcher pathMatcher = pathPattern.matcher(svg);
+            Group group = new Group();
+            while (pathMatcher.find()) {
+                SVGPath svgPath = new SVGPath();
+                svgPath.setContent(pathMatcher.group(1));
+                svgPath.setFill(fill);
+                group.getChildren().add(svgPath);
+            }
+            if (group.getChildren().isEmpty()) return null;
+
+            double originalWidth = 16; // Default
+            Pattern vbPattern = Pattern.compile("(?i)viewBox\\s*=\\s*['\"]([-\\d\\.]+)\\s+([-\\d\\.]+)\\s+([-\\d\\.]+)\\s+([-\\d\\.]+)['\"]");
+            Matcher vbMatcher = vbPattern.matcher(svg);
+            if (vbMatcher.find()) {
+                try {
+                    originalWidth = Double.parseDouble(vbMatcher.group(3));
+                } catch (NumberFormatException ignored) {}
+            }
+            double scale = (originalWidth > 0) ? targetSizePx / originalWidth : 1.0;
+            group.setScaleX(scale);
+            group.setScaleY(scale);
+            return group;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+}

@@ -1,11 +1,15 @@
 package ledgerly.app.db;
 
+import ledgerly.app.model.Product;
+import ledgerly.app.model.Sale;
 import ledgerly.app.model.User;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseManager {
+
+    // ... existing getUsers and addUser methods
 
     public static List<User> getUsers() {
         String sql = "SELECT id, username FROM users";
@@ -35,6 +39,114 @@ public class DatabaseManager {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Error adding user to database: " + e.getMessage());
+        }
+    }
+
+    public static List<Sale> getSalesForUser(int userId) {
+        // Use LEFT JOIN and COALESCE to handle deleted products
+        String sql = "SELECT s.sale_id, s.created_at, s.amount, s.description, COALESCE(p.product_name, 'Unknown Product') as product_name " +
+                "FROM sales s LEFT JOIN products p ON s.product_id = p.product_id " +
+                "WHERE s.user_id = ? ORDER BY s.created_at DESC";
+        List<Sale> sales = new ArrayList<>();
+        try (Connection conn = Database.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                sales.add(new Sale(
+                        rs.getInt("sale_id"),
+                        rs.getString("created_at"),
+                        rs.getDouble("amount"),
+                        rs.getString("description"),
+                        rs.getString("product_name")
+                ));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching sales: " + e.getMessage());
+        }
+        return sales;
+    }
+
+    public static void addSale(int userId, Integer productId, double amount, String description) {
+        String sql = "INSERT INTO sales(user_id, product_id, amount, description) VALUES(?, ?, ?, ?)";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            if (productId == null) {
+                pstmt.setNull(2, Types.INTEGER);
+            } else {
+                pstmt.setInt(2, productId);
+            }
+            pstmt.setDouble(3, amount);
+            pstmt.setString(4, description);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error adding sale: " + e.getMessage());
+        }
+    }
+
+    public static List<Product> getProductsForUser(int userId) {
+        String sql = "SELECT product_id, product_name FROM products WHERE user_id = ?";
+        List<Product> products = new ArrayList<>();
+        try (Connection conn = Database.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                products.add(new Product(rs.getInt("product_id"), rs.getString("product_name")));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching products: " + e.getMessage());
+        }
+        return products;
+    }
+
+    public static void addProduct(int userId, String productName) {
+        String sql = "INSERT INTO products(user_id, product_name) VALUES(?, ?)";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            pstmt.setString(2, productName);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error adding product: " + e.getMessage());
+        }
+    }
+
+    public static void updateProduct(int productId, String newName) {
+        String sql = "UPDATE products SET product_name = ? WHERE product_id = ?";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, newName);
+            pstmt.setInt(2, productId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error updating product: " + e.getMessage());
+        }
+    }
+
+    public static void deleteProduct(int productId) {
+        // Important: First, update sales to nullify the product_id foreign key
+        String updateSalesSql = "UPDATE sales SET product_id = NULL WHERE product_id = ?";
+        String deleteProductSql = "DELETE FROM products WHERE product_id = ?";
+        try (Connection conn = Database.getConnection()) {
+            // Disable auto-commit to perform a transaction
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement pstmtUpdate = conn.prepareStatement(updateSalesSql)) {
+                pstmtUpdate.setInt(1, productId);
+                pstmtUpdate.executeUpdate();
+            }
+
+            try (PreparedStatement pstmtDelete = conn.prepareStatement(deleteProductSql)) {
+                pstmtDelete.setInt(1, productId);
+                pstmtDelete.executeUpdate();
+            }
+
+            conn.commit(); // Commit the transaction
+
+        } catch (SQLException e) {
+            System.err.println("Error deleting product and updating sales: " + e.getMessage());
         }
     }
 }

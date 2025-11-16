@@ -5,6 +5,7 @@ module Ledgerly {
 
     opens ledgerly.app.controller to javafx.fxml;
     opens ledgerly.app.view to javafx.fxml;
+    opens ledgerly.app.model to javafx.base; // Allow reflection for TableView
 
     exports ledgerly.app;
 }

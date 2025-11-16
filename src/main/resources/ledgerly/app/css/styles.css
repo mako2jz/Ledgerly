@@ -18,9 +18,26 @@
     -fx-font-weight: bold;
 }
 
+.title-label-alt{
+    -fx-font-size: 28px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.title-label-edit {
+    -fx-font-size: 20px;
+    -fx-text-fill: #2E7D32; /* Dark Green */
+    -fx-font-weight: bold;
+}
+
 .subtitle-label {
     -fx-font-size: 16px;
     -fx-text-fill: #666666;
+}
+
+.subtitle-label-alt {
+    -fx-font-size: 16px;
+    -fx-text-fill: white;
 }
 
 .list-view {
@@ -118,4 +135,61 @@
     -fx-font-size: 14px;
     -fx-padding: 10 20 10 20;
     -fx-background-radius: 8;
+}
+
+.sidebar-button {
+    -fx-background-color: #008F4A;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 10 15 10 15;
+    -fx-graphic-text-gap: 10;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: rgba(0, 143, 74, 0.64);
+}
+
+.stat-box {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);
+}
+
+.stat-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2E7D32;
+}
+
+.delete-icon-button {
+    -fx-background-color: transparent;
+    -fx-padding: 4;
+    -fx-background-radius: 50%;
+}
+
+.delete-icon-button:hover {
+    -fx-background-color: #F0F0F0;
+}
+
+.edit-icon-button {
+    -fx-background-color: transparent;
+    -fx-padding: 4;
+    -fx-background-radius: 50%;
+}
+
+.edit-icon-button:hover {
+    -fx-background-color: #F0F0F0;
+}
+
+/* center dialog buttons and add spacing when dialog uses modal-root */
+.dialog-pane.modal-root .button-bar {
+    -fx-alignment: center; /* center buttons horizontally */
+    -fx-padding: 12 0 0 0;
+    -fx-spacing: 10;
 }

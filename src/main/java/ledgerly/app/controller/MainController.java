@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -54,12 +55,13 @@ public class MainController {
         // sets up user list view
         userListView.setCellFactory(param -> new UserListCell());
         loadUsers();
+        userListView.setOnMouseClicked(this::handleUserSelection);
 
-        // prepare title animation: start slightly to the left and transparent
+        // prepare title animation
         if (titleLabel != null) {
             titleLabel.setOpacity(0);
             titleLabel.setTranslateX(-20);
-
+            // ... (animation code is unchanged)
             FadeTransition fade = new FadeTransition(Duration.millis(1000), titleLabel);
             fade.setFromValue(0);
             fade.setToValue(1);
@@ -76,10 +78,42 @@ public class MainController {
         }
 
         if (toastContainer != null) {
-            // Transparent areas won't block clicks
             toastContainer.setPickOnBounds(false);
-            // Prevent the VBox from expanding to fill the StackPane width.
             toastContainer.setMaxWidth(Region.USE_PREF_SIZE);
+        }
+    }
+
+    private void handleUserSelection(MouseEvent event) {
+        User selectedUser = userListView.getSelectionModel().getSelectedItem();
+        if (selectedUser != null) {
+            try {
+                // Close the current login window
+                Stage currentStage = (Stage) userListView.getScene().getWindow();
+                currentStage.close();
+
+                // Load the dashboard view
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/ledgerly/app/view/DashboardView.fxml"));
+                Parent root = loader.load();
+
+                // Pass the selected user to the dashboard controller
+                DashboardController controller = loader.getController();
+                controller.initData(selectedUser);
+
+                Stage dashboardStage = new Stage();
+                dashboardStage.setTitle("Ledgerly Dashboard");
+                Scene scene = new Scene(root);
+
+                URL cssUrl = getClass().getResource("/ledgerly/app/css/styles.css");
+                if (cssUrl != null) {
+                    scene.getStylesheets().add(cssUrl.toExternalForm());
+                }
+
+                dashboardStage.setScene(scene);
+                dashboardStage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -119,7 +153,7 @@ public class MainController {
             if (newUsername != null && !newUsername.isEmpty()) {
                 DatabaseManager.addUser(newUsername);
                 loadUsers(); // Refresh the user list
-                showToast();
+                showToast("User successfully added");
             }
 
         } catch (IOException e) {
@@ -127,25 +161,22 @@ public class MainController {
         }
     }
 
-    private void showToast() {
-        // create a new Label for each toast so multiple toasts can exist simultaneously
-        Label toast = new Label("User successfully added");
+    private void showToast(String message) {
+        Label toast = new Label(message);
         toast.getStyleClass().add("toast-label");
 
-        Node icon = createSvgGraphic();
+        Node icon = createSvgGraphic("/ledgerly/app/svg/check.svg");
         if (icon != null) {
             toast.setGraphic(icon);
             toast.setGraphicTextGap(8);
         }
 
-        // ensure the toast doesn't expand and only its painted area is pickable
         toast.setOpacity(0);
-        toast.setTranslateY(20); // start slightly below
+        toast.setTranslateY(20);
         toast.setMouseTransparent(false);
         toast.setPickOnBounds(true);
         toast.setMaxWidth(Region.USE_PREF_SIZE);
 
-        // add new toast at index 0 so newer toasts appear above older ones (stack upward)
         if (toastContainer != null) {
             toastContainer.getChildren().add(0, toast);
         }
@@ -154,14 +185,12 @@ public class MainController {
         slideUp.setToY(0);
         FadeTransition fadeIn = new FadeTransition(Duration.millis(400), toast);
         fadeIn.setToValue(1);
-
         ParallelTransition showTransition = new ParallelTransition(slideUp, fadeIn);
 
-        TranslateTransition slideDown = new TranslateTransition(Duration.millis(400), toast);
-        slideDown.setToY(20);
         FadeTransition fadeOut = new FadeTransition(Duration.millis(400), toast);
         fadeOut.setToValue(0);
-
+        TranslateTransition slideDown = new TranslateTransition(Duration.millis(400), toast);
+        slideDown.setToY(20);
         ParallelTransition hideTransition = new ParallelTransition(slideDown, fadeOut);
         hideTransition.setOnFinished(e -> {
             if (toastContainer != null) {
@@ -177,59 +206,32 @@ public class MainController {
         sequentialTransition.play();
     }
 
-    private Node createSvgGraphic() {
-        try (InputStream is = getClass().getResourceAsStream("/ledgerly/app/icons/check.svg")) {
+    private Node createSvgGraphic(String resourcePath) {
+        try (InputStream is = getClass().getResourceAsStream(resourcePath)) {
             if (is == null) return null;
             String svg = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-
-            // Find all d="..." or d='...' occurrences (case-insensitive)
             Pattern pathPattern = Pattern.compile("(?i)d\\s*=\\s*['\"]([^'\"]+)['\"]");
             Matcher pathMatcher = pathPattern.matcher(svg);
-
             Group group = new Group();
-            boolean found = false;
             while (pathMatcher.find()) {
-                String d = pathMatcher.group(1);
-                if (d == null || d.trim().isEmpty()) continue;
                 SVGPath svgPath = new SVGPath();
-                svgPath.setContent(d);
+                svgPath.setContent(pathMatcher.group(1));
                 svgPath.setFill(Color.WHITE);
                 group.getChildren().add(svgPath);
-                found = true;
             }
+            if (group.getChildren().isEmpty()) return null;
 
-            if (!found) return null;
-
-            // Determine original width for scaling: look for width="..." or viewBox="minX minY width height"
-            double originalWidth = -1;
-            Pattern widthPattern = Pattern.compile("(?i)width\\s*=\\s*['\"](\\d+(?:\\.\\d+)?)['\"]");
-            Matcher widthMatcher = widthPattern.matcher(svg);
-            if (widthMatcher.find()) {
+            double originalWidth = 16;
+            Pattern vbPattern = Pattern.compile("(?i)viewBox\\s*=\\s*['\"]([-\\d\\.]+)\\s+([-\\d\\.]+)\\s+([-\\d\\.]+)\\s+([-\\d\\.]+)['\"]");
+            Matcher vbMatcher = vbPattern.matcher(svg);
+            if (vbMatcher.find()) {
                 try {
-                    originalWidth = Double.parseDouble(widthMatcher.group(1));
-                } catch (NumberFormatException ignored) {
-                }
+                    originalWidth = Double.parseDouble(vbMatcher.group(3));
+                } catch (NumberFormatException ignored) {}
             }
-
-            if (originalWidth <= 0) {
-                // try viewBox
-                Pattern vbPattern = Pattern.compile("(?i)viewBox\\s*=\\s*['\"]([-\\d\\.]+)\\s+([-\\d\\.]+)\\s+([-\\d\\.]+)\\s+([-\\d\\.]+)['\"]");
-                Matcher vbMatcher = vbPattern.matcher(svg);
-                if (vbMatcher.find()) {
-                    try {
-                        originalWidth = Double.parseDouble(vbMatcher.group(3));
-                    } catch (NumberFormatException ignored) { originalWidth = -1; }
-                }
-            }
-
-            double scale = 1.0;
-            if (originalWidth > 0) {
-                scale = (double) 16 / originalWidth;
-            }
-
+            double scale = (originalWidth > 0) ? 16 / originalWidth : 1.0;
             group.setScaleX(scale);
             group.setScaleY(scale);
-
             group.setMouseTransparent(true);
             return group;
         } catch (IOException ex) {

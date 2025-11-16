@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ledgerly.app.controller.ProductController"
+      alignment="CENTER_LEFT" spacing="15"
+      styleClass="modal-root" prefWidth="400">
+
+    <padding>
+        <Insets top="20" right="30" bottom="20" left="30"/>
+    </padding>
+
+    <Label text="Manage Products" styleClass="title-label" alignment="CENTER"/>
+
+    <ListView fx:id="productListView" prefHeight="200"/>
+
+    <VBox spacing="5">
+        <Label text="New Product Name" styleClass="subtitle-label"/>
+        <TextField fx:id="productNameField" promptText="Enter product name"/>
+    </VBox>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Close" onAction="#handleClose" styleClass="cancel-button"/>
+        <Button fx:id="addProductButton" text="Add Product" onAction="#handleAddProduct" styleClass="add-button"/>
+    </HBox>
+</VBox>
