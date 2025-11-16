@@ -1,6 +1,7 @@
 package ledgerly.app.controller;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -11,16 +12,17 @@ public class CustomEditDialog extends Dialog<String> {
 
     public CustomEditDialog(String defaultValue) {
         setTitle("Edit Product");
-        setTitle("Edit Product");
         Label headerLabel = new Label("Editing product: " + defaultValue);
+        headerLabel.setAlignment(Pos.CENTER);
         headerLabel.getStyleClass().add("title-label-edit");
         getDialogPane().setHeader(headerLabel);
 
         // Create the content
         VBox content = new VBox(15);
-        content.setPadding(new Insets(20, 30, 20, 30));
+        content.setPadding(new Insets(0, 30, 0, 30));
 
-        Label contentLabel = new Label("New name:");
+        Label contentLabel = new Label("New Name:");
+        contentLabel.getStyleClass().add("subtitle-label");
         textField = new TextField(defaultValue);
         textField.getStyleClass().add("text-field");
 

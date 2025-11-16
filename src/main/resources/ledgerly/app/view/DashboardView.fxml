@@ -35,53 +35,49 @@
 
     <!-- Main Content -->
     <center>
-        <StackPane>
-            <VBox spacing="20">
-                <padding>
-                    <Insets top="40" right="50" bottom="40" left="50"/>
-                </padding>
+        <VBox spacing="20">
+            <padding>
+                <Insets top="40" right="50" bottom="40" left="50"/>
+            </padding>
 
-                <Label fx:id="welcomeUserLabel" text="Welcome, {user}" styleClass="title-label"/>
-                <Label text="Here's your sales overview" styleClass="subtitle-label"/>
+            <Label fx:id="welcomeUserLabel" text="Welcome, {user}" styleClass="title-label"/>
+            <Label text="Here's your sales overview" styleClass="subtitle-label"/>
 
-                <!-- Stats Boxes -->
-                <HBox spacing="20" alignment="CENTER_LEFT">
-                    <VBox styleClass="stat-box" HBox.hgrow="ALWAYS">
-                        <Label text="Total sales" styleClass="subtitle-label"/>
-                        <Label fx:id="totalSalesLabel" styleClass="stat-value"/>
-                    </VBox>
-                    <VBox styleClass="stat-box" HBox.hgrow="ALWAYS">
-                        <Label text="Number of sales" styleClass="subtitle-label"/>
-                        <Label fx:id="numSalesLabel" styleClass="stat-value"/>
-                    </VBox>
-                    <VBox styleClass="stat-box" HBox.hgrow="ALWAYS">
-                        <Label text="Average sale" styleClass="subtitle-label"/>
-                        <Label fx:id="avgSaleLabel" styleClass="stat-value"/>
-                    </VBox>
-                </HBox>
-
-                <!-- Sales History Table -->
-                <VBox spacing="10" VBox.vgrow="ALWAYS">
-                    <Label text="Sales History" styleClass="subtitle-label"/>
-                    <TableView fx:id="salesTableView" VBox.vgrow="ALWAYS">
-                        <columns>
-                            <TableColumn fx:id="dateColumn" text="Date" prefWidth="150"/>
-                            <TableColumn fx:id="productColumn" text="Product" prefWidth="150"/>
-                            <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="250"/>
-                            <TableColumn fx:id="amountColumn" text="Amount (₱)" prefWidth="100"/>
-                        </columns>
-                        <columnResizePolicy>
-                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                        </columnResizePolicy>
-                    </TableView>
+            <!-- Stats Boxes -->
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <VBox styleClass="stat-box" HBox.hgrow="ALWAYS">
+                    <Label text="Total sales" styleClass="subtitle-label"/>
+                    <Label fx:id="totalSalesLabel" styleClass="stat-value"/>
                 </VBox>
-            </VBox>
+                <VBox styleClass="stat-box" HBox.hgrow="ALWAYS">
+                    <Label text="Number of sales" styleClass="subtitle-label"/>
+                    <Label fx:id="numSalesLabel" styleClass="stat-value"/>
+                </VBox>
+                <VBox styleClass="stat-box" HBox.hgrow="ALWAYS">
+                    <Label text="Average sale" styleClass="subtitle-label"/>
+                    <Label fx:id="avgSaleLabel" styleClass="stat-value"/>
+                </VBox>
+            </HBox>
 
-            <Button fx:id="addSaleButton" text="+ Add Sale" onAction="#handleAddSaleButton" styleClass="add-button" StackPane.alignment="BOTTOM_RIGHT">
-                <StackPane.margin>
-                    <Insets bottom="40" right="50"/>
-                </StackPane.margin>
-            </Button>
-        </StackPane>
+            <!-- Sales History Table -->
+            <VBox spacing="10" VBox.vgrow="ALWAYS">
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Sales History" styleClass="subtitle-label"/>
+                    <Pane HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="addSaleButton" text="+ Add Sale" onAction="#handleAddSaleButton" styleClass="add-button"/>
+                </HBox>
+                <TableView fx:id="salesTableView" VBox.vgrow="ALWAYS" styleClass="dashboard-table">
+                    <columns>
+                        <TableColumn fx:id="dateColumn" text="Date" prefWidth="150"/>
+                        <TableColumn fx:id="productColumn" text="Product" prefWidth="150"/>
+                        <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="350"/>
+                        <TableColumn fx:id="amountColumn" text="Amount" prefWidth="100"/>
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
+                </TableView>
+            </VBox>
+        </VBox>
     </center>
 </BorderPane>

@@ -18,6 +18,9 @@ import javafx.scene.shape.SVGPath;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.scene.control.TableCell;
+import javafx.util.Callback;
+import ledgerly.app.model.Sale;
 import ledgerly.app.Main;
 import ledgerly.app.db.DatabaseManager;
 import ledgerly.app.model.Sale;
@@ -65,6 +68,26 @@ public class DashboardController {
     public void initialize() {
         productsButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/basket.svg", 16, Color.web("white")));
         logoutButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/arrow-bar-left.svg", 16, Color.web("#333333")));
+        amountColumn.setCellFactory(new Callback<TableColumn<Sale, Double>, TableCell<Sale, Double>>() {
+            @Override
+            public TableCell<Sale, Double> call(TableColumn<Sale, Double> col) {
+                return new TableCell<>() {
+                    @Override
+                    protected void updateItem(Double value, boolean empty) {
+                        super.updateItem(value, empty);
+                        if (empty || value == null) {
+                            setText(null);
+                            getStyleClass().remove("amount-cell");
+                        } else {
+                            setText(String.format("₱%.2f", value));
+                            if (!getStyleClass().contains("amount-cell")) {
+                                getStyleClass().add("amount-cell");
+                            }
+                        }
+                    }
+                };
+            }
+        });
     }
 
     public void initData(User user) {
