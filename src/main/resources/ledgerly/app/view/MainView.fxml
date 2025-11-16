@@ -33,10 +33,11 @@
         </Button>
     </VBox>
 
-    <Label fx:id="toastLabel" styleClass="toast-label" text="User successfully added" visible="false" StackPane.alignment="BOTTOM_RIGHT">
+    <!-- Replaced single label with a VBox container to hold multiple toast Labels -->
+    <VBox fx:id="toastContainer" spacing="8" alignment="BOTTOM_RIGHT" StackPane.alignment="BOTTOM_RIGHT">
         <StackPane.margin>
             <Insets bottom="20" right="20"/>
         </StackPane.margin>
-    </Label>
+    </VBox>
 
 </StackPane>
