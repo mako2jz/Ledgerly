@@ -1,132 +1,142 @@
+/* ============================
+   Tokens (colors, spacing)
+   ============================ */
 .root {
-    -fx-background-color: #FFFFFF;
-    -fx-font-family: "System";
+    /* Color tokens */
+    -app-bg: #FFFFFF;
+    -app-accent: #00A859; /* Bright Green */
+    -app-accent-dark: #008F4A;
+    -app-accent-deep: #0B6623;
+    -app-dark-green: #2E7D32;
+    -app-light-green: #E8F5E9;
+    -app-border: #E0E0E0;
+    -app-border-soft: #E6E6E6;
+    -app-muted: #666666;
+    -app-text: #333333;
+    -app-muted-light: #FBFBFB;
+    -app-hover-row: #F5FFF6;
+    -app-cell-hover: #F5F5F5;
+    -app-pressed: #F8F8F8;
+    -app-scroll-thumb: #00A859;
+    -app-toast-bg: #00A859;
+    -app-white: #FFFFFF;
+
+    /* Typography */
+    -app-font-family: "System";
+    -app-title-size: 28px;
+    -app-subtitle-size: 16px;
+    -app-body-size: 13px;
+
+    /* Radii & spacing */
+    -app-radius-sm: 8;
+    -app-radius-btn: 8;
+    -app-radius-avatar: 50;
+    -app-padding-sm: 8;
+    -app-padding-md: 12;
 }
 
+/* Base */
+.root {
+    -fx-background-color: -app-bg;
+    -fx-font-family: -app-font-family;
+}
+
+/* ============================
+   Headings & Labels
+   ============================ */
+.title-label,
+.title-label-alt,
+.title-label-edit {
+    -fx-font-weight: bold;
+}
+
+.title-label {
+    -fx-font-size: 28px;
+    -fx-text-fill: -app-dark-green;
+}
+
+.title-label-alt{
+    -fx-font-size: 28px;
+    -fx-text-fill: -app-white;
+}
+
+.title-label-edit {
+    -fx-font-size: 20px;
+    -fx-text-fill: -app-dark-green;
+}
+
+.subtitle-label,
+.subtitle-label-alt {
+    -fx-font-size: 16px;
+}
+
+.subtitle-label {
+    -fx-text-fill: -app-muted;
+}
+
+.subtitle-label-alt {
+    -fx-text-fill: -app-white;
+}
+
+/* ============================
+   Containers & Panels
+   ============================ */
 .modal-root {
-    -fx-background-color: white;
+    -fx-background-color: -app-white;
     -fx-background-radius: 8;
-    -fx-border-color: #E0E0E0;
+    -fx-border-color: -app-border;
     -fx-border-width: 1;
     -fx-border-radius: 8;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0, 0, 0);
 }
 
-.title-label {
-    -fx-font-size: 28px;
-    -fx-text-fill: #2E7D32; /* Dark Green */
-    -fx-font-weight: bold;
+/* Dialog button alignment for modal-root */
+.dialog-pane.modal-root .button-bar {
+    -fx-alignment: center;
+    -fx-padding: 12 0 0 0;
+    -fx-spacing: 10;
 }
 
-.title-label-alt{
-    -fx-font-size: 28px;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-}
-
-.title-label-edit {
-    -fx-font-size: 20px;
-    -fx-text-fill: #2E7D32; /* Dark Green */
-    -fx-font-weight: bold;
-}
-
-.subtitle-label {
-    -fx-font-size: 16px;
-    -fx-text-fill: #666666;
-}
-
-.subtitle-label-alt {
-    -fx-font-size: 16px;
-    -fx-text-fill: white;
-}
-
-.list-view {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-}
-
-/* Make empty cells transparent */
-.list-cell {
-    -fx-background-color: transparent;
-    -fx-padding: 5 10 5 10; /* Creates a 5px gap top/bottom inside the border */
-}
-
-/* Apply styles only to cells with content */
-.list-cell:filled {
-    -fx-background-color: white;
+.stat-box {
+    -fx-background-color: -app-white;
+    -fx-padding: 20;
     -fx-background-radius: 10;
     -fx-border-radius: 10;
-    -fx-border-color: #E0E0E0;
+    -fx-border-color: -app-border;
     -fx-border-width: 1;
-    /* Add a margin to separate the cells */
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);
 }
 
-.list-cell:filled:hover {
-    -fx-background-color: #F5F5F5;
-}
-
-/* Keep pressed subtle but consistent */
-.list-cell:pressed,
-.list-cell:filled:pressed {
-    -fx-background-color: #F8F8F8;
-    -fx-background-radius: 10;
-}
-
-/* Icon buttons inside list cells: transparent and no focus ring */
-.edit-icon-button,
-.delete-icon-button {
-    -fx-background-color: transparent;
-    -fx-padding: 4;
-    -fx-cursor: hand;
-    -fx-focus-color: transparent;
-    -fx-faint-focus-color: transparent;
-    -fx-border-color: transparent;
-}
-
-/* Prevent hover from painting a white block over the cell */
-.edit-icon-button:hover,
-.delete-icon-button:hover,
-.edit-icon-button:pressed,
-.delete-icon-button:pressed {
-    -fx-background-color: transparent;
-}
-
-.list-cell .avatar-circle {
-    -fx-background-color: #E8F5E9; /* Light Green */
-    -fx-background-radius: 50;
-}
-
-.list-cell .avatar-text {
-    -fx-font-size: 18px;
-    -fx-fill: #2E7D32; /* Dark Green */
+.stat-value {
+    -fx-font-size: 24px;
     -fx-font-weight: bold;
+    -fx-text-fill: -app-dark-green;
 }
 
-.list-cell .user-name-label {
-    -fx-font-size: 16px;
-    -fx-text-fill: #333333;
+/* ============================
+   Buttons
+   ============================ */
+.add-button,
+.cancel-button,
+.sidebar-button {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 12 20 12 20;
 }
 
 .add-button {
-    -fx-background-color: #00A859; /* Bright Green */
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 8;
-    -fx-padding: 12 20 12 20;
+    -fx-background-color: -app-accent;
+    -fx-text-fill: -app-white;
 }
 
 .add-button:hover {
-    -fx-background-color: #008F4A;
+    -fx-background-color: -app-accent-dark;
 }
 
 .cancel-button {
-    -fx-background-color: white;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 8;
-    -fx-padding: 12 20 12 20;
+    -fx-background-color: -app-white;
+    -fx-text-fill: -app-text;
     -fx-border-color: rgba(117, 117, 117, 0.47);
     -fx-border-radius: 8;
 }
@@ -135,175 +145,46 @@
     -fx-background-color: #cecece;
 }
 
-.scroll-bar {
-    -fx-background-color: transparent;
-}
-
-.thumb {
-    -fx-background-color: #00A859;
-    -fx-background-radius: 10;
-}
-
-.thumb:hover {
-    -fx-background-color: #008F4A;
-}
-
-.text-field {
-    -fx-background-color: #F5F5F5;
-    -fx-background-radius: 8;
-    -fx-padding: 10 15 10 15;
-    -fx-border-color: transparent;
-}
-
-.text-area {
-    -fx-background-color: #F5F5F5;
-    -fx-background-radius: 8;
-    -fx-padding: 10 15 10 15;
-
-    /* Remove default border + focus ring */
-    -fx-border-color: transparent;
-    -fx-focus-color: transparent;
-    -fx-faint-focus-color: transparent;
-}
-
-/* The inner scrollable content area */
-.text-area .content {
-    -fx-background-color: #F5F5F5;
-    -fx-background-radius: 8;
-    -fx-padding: 0; /* Important or you get double padding */
-    -fx-border-color: transparent;
-}
-
-.toast-label {
-    -fx-background-color: #00A859;
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-padding: 10 20 10 20;
-    -fx-background-radius: 8;
-}
-
 .sidebar-button {
-    -fx-background-color: #008F4A;
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 8;
-    -fx-padding: 10 15 10 15;
+    -fx-background-color: -app-accent-dark;
+    -fx-text-fill: -app-white;
     -fx-graphic-text-gap: 10;
+    -fx-padding: 10 15 10 15;
 }
 
 .sidebar-button:hover {
     -fx-background-color: rgba(0, 143, 74, 0.64);
 }
 
-.stat-box {
-    -fx-background-color: white;
-    -fx-padding: 20;
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
-    -fx-border-color: #E0E0E0;
-    -fx-border-width: 1;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);
-}
-
-.stat-value {
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #2E7D32;
-}
-
+/* Icon buttons (edit/delete) - combined and deduplicated */
+.edit-icon-button,
 .delete-icon-button {
     -fx-background-color: transparent;
     -fx-padding: 4;
+    -fx-cursor: hand;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-border-color: transparent;
     -fx-background-radius: 50%;
 }
 
-.delete-icon-button:hover {
-    -fx-background-color: #F0F0F0;
-}
-
-.edit-icon-button {
+.edit-icon-button:hover,
+.delete-icon-button:hover,
+.edit-icon-button:pressed,
+.delete-icon-button:pressed {
     -fx-background-color: transparent;
-    -fx-padding: 4;
-    -fx-background-radius: 50%;
 }
 
+.delete-icon-button:hover,
 .edit-icon-button:hover {
     -fx-background-color: #F0F0F0;
 }
 
-/* center dialog buttons and add spacing when dialog uses modal-root */
-.dialog-pane.modal-root .button-bar {
-    -fx-alignment: center; /* center buttons horizontally */
-    -fx-padding: 12 0 0 0;
-    -fx-spacing: 10;
-}
-
-.dashboard-table {
-    -fx-background-color: white;
-    -fx-border-color: #E6E6E6;
-    -fx-border-width: 1;
-    -fx-background-radius: 8;
-    -fx-border-radius: 2;
-    -fx-padding: 4;
-}
-
-/* Header */
-.dashboard-table .column-header-background {
-    -fx-background-color: #00A859;
-    -fx-border-color: transparent transparent #EAEAEA transparent;
-    -fx-border-width: 0 0 1 0;
-}
-
-.dashboard-table .column-header,
-.dashboard-table .column-header .label {
-    -fx-background-color: #00A859;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-size: 13px;
-    -fx-padding: 8 10 8 10;
-}
-
-.dashboard-table .column-header:hover,
-.dashboard-table .column-header .label:hover {
-    -fx-background-color: #008F4A;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-size: 13px;
-    -fx-padding: 8 10 8 10;
-}
-
-.dashboard-table .arrow {
-    -fx-background-color: white;
-}
-
-/* Cells and rows */
-.dashboard-table .table-cell {
-    -fx-padding: 8 12 8 12;
-    -fx-font-size: 13px;
-    -fx-text-fill: #333333;
-}
-.dashboard-table .table-row-cell:odd {
-    -fx-background-color: #FFFFFF;
-}
-.dashboard-table .table-row-cell:even {
-    -fx-background-color: #FBFBFB;
-}
-.dashboard-table .table-row-cell:hover {
-    -fx-background-color: #F5FFF6;
-}
-.dashboard-table .table-row-cell:filled:selected,
-.dashboard-table .table-row-cell:selected {
-    -fx-background-color: #E8F5E9;
-    -fx-text-fill: #0B6623;
-}
-
-/* Amount cell alignment and emphasis */
-.dashboard-table .amount-cell {
-    -fx-alignment: CENTER_LEFT;
-    -fx-font-weight: bold;
-}
-
+/* ============================
+   Form controls
+   ============================ */
+.text-field,
+.text-area,
 .combo-box {
     -fx-background-color: #F5F5F5;
     -fx-background-radius: 8;
@@ -312,6 +193,25 @@
     -fx-font-size: 14px;
 }
 
+.text-field {
+    -fx-padding: 10 15 10 15;
+}
+
+.text-area {
+    -fx-padding: 10 15 10 15;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+/* Inner scrollable content for text-area */
+.text-area .content {
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 8;
+    -fx-padding: 0;
+    -fx-border-color: transparent;
+}
+
+/* Combo box specifics */
 .combo-box .arrow-button {
     -fx-background-color: transparent;
     -fx-padding: 0 8 0 8;
@@ -323,15 +223,159 @@
 }
 
 .combo-box .arrow {
-    -fx-background-color: #666666; /* subtle icon */
+    -fx-background-color: #666666;
 }
 
-.combo-box-popup .list-cell:hover {
-    -fx-text-fill: black;
-    -fx-background-color: #F5F5F5; /* same hover as list cells */
-}
-
+.combo-box-popup .list-cell:hover,
 .combo-box-popup .list-cell:selected {
     -fx-text-fill: black;
-    -fx-background-color: #F5F5F5; /* same hover as list cells */
+    -fx-background-color: #F5F5F5;
+}
+
+/* ============================
+   Lists
+   ============================ */
+.list-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* General cell spacing */
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 5 10 5 10; /* top right bottom left */
+}
+
+/* Only apply card-like styling to filled cells */
+.list-cell:filled {
+    -fx-background-color: -app-white;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: -app-border;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: -app-cell-hover;
+}
+
+.list-cell:pressed,
+.list-cell:filled:pressed {
+    -fx-background-color: -app-pressed;
+    -fx-background-radius: 10;
+}
+
+/* Avatar and user text inside list cells */
+.list-cell .avatar-circle {
+    -fx-background-color: -app-light-green;
+    -fx-background-radius: 50;
+}
+
+.list-cell .avatar-text {
+    -fx-font-size: 18px;
+    -fx-fill: -app-dark-green;
+    -fx-font-weight: bold;
+}
+
+.list-cell .user-name-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: -app-text;
+}
+
+/* ============================
+   Tables (dashboard)
+   ============================ */
+.dashboard-table {
+    -fx-background-color: -app-white;
+    -fx-border-color: -app-border-soft;
+    -fx-border-width: 1;
+    -fx-background-radius: 8;
+    -fx-border-radius: 2;
+}
+
+/* Header styles */
+.dashboard-table .column-header-background {
+    -fx-background-color: -app-accent;
+    -fx-border-color: transparent transparent #EAEAEA transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.dashboard-table .column-header,
+.dashboard-table .column-header .label {
+    -fx-background-color: -app-accent;
+    -fx-text-fill: -app-white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-padding: 8 10 8 10;
+}
+
+.dashboard-table .column-header:hover,
+.dashboard-table .column-header .label:hover {
+    -fx-background-color: -app-accent-dark;
+}
+
+/* Rows & cells */
+.dashboard-table .table-cell {
+    -fx-padding: 8 12 8 12;
+    -fx-font-size: 13px;
+    -fx-text-fill: -app-text;
+}
+
+.dashboard-table .table-row-cell:odd {
+    -fx-background-color: #FFFFFF;
+}
+
+.dashboard-table .table-row-cell:even {
+    -fx-background-color: -app-muted-light;
+}
+
+.dashboard-table .table-row-cell:hover {
+    -fx-background-color: -app-hover-row;
+}
+
+.dashboard-table .table-row-cell:filled:selected,
+.dashboard-table .table-row-cell:selected {
+    -fx-background-color: -app-light-green;
+    -fx-text-fill: -app-accent-deep;
+}
+
+.dashboard-table .amount-cell {
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-weight: bold;
+}
+
+/* ============================
+   Scrollbar & Thumb
+   ============================ */
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.thumb {
+    -fx-background-color: -app-scroll-thumb;
+    -fx-background-radius: 10;
+}
+
+.thumb:hover {
+    -fx-background-color: -app-accent-dark;
+}
+
+/* ============================
+   Toasts
+   ============================ */
+.toast-label {
+    -fx-background-color: -app-toast-bg;
+    -fx-text-fill: -app-white;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20 10 20;
+    -fx-background-radius: 8;
+}
+
+/* ============================
+   Utilities / Misc
+   ============================ */
+/* Compact, non-invasive table arrow */
+.dashboard-table .arrow {
+    -fx-background-color: -app-white;
 }
