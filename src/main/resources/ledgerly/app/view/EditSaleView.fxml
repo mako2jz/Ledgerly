@@ -8,23 +8,37 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="ledgerly.app.controller.AddSaleController"
+      fx:controller="ledgerly.app.controller.EditSaleController"
       alignment="CENTER_LEFT" spacing="15"
-      styleClass="modal-root" prefWidth="400">
+      styleClass="modal-root" prefWidth="450">
 
     <padding>
         <Insets top="20" right="30" bottom="20" left="30"/>
     </padding>
 
-    <Label text="Add New Sale" styleClass="title-label" alignment="CENTER"/>
+    <Label text="Edit Sale" styleClass="title-label" alignment="CENTER"/>
+
+    <GridPane hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" minWidth="100"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="Sale ID:" styleClass="subtitle-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Label fx:id="saleIdLabel" styleClass="text-field" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Date:" styleClass="subtitle-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <Label fx:id="dateLabel" styleClass="text-field" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+    </GridPane>
 
     <VBox spacing="5">
         <Label text="Product" styleClass="subtitle-label"/>
         <ComboBox fx:id="productComboBox" promptText="Select a product" maxWidth="Infinity"/>
-        <Label text="Can't add a product? Try creating one first under Products."/>
     </VBox>
 
     <VBox spacing="5">
@@ -39,6 +53,6 @@
 
     <HBox spacing="10" alignment="CENTER">
         <Button text="Cancel" onAction="#handleCancel" styleClass="cancel-button"/>
-        <Button fx:id="addSaleButton" text="Add Sale" onAction="#handleAddSale" styleClass="add-button"/>
+        <Button fx:id="saveButton" text="Save Changes" onAction="#handleSave" styleClass="add-button"/>
     </HBox>
 </VBox>

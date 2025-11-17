@@ -68,10 +68,12 @@
                 </HBox>
                 <TableView fx:id="salesTableView" VBox.vgrow="ALWAYS" styleClass="dashboard-table">
                     <columns>
+                        <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
                         <TableColumn fx:id="dateColumn" text="Date" prefWidth="150"/>
                         <TableColumn fx:id="productColumn" text="Product" prefWidth="150"/>
-                        <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="300"/>
+                        <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="200"/>
                         <TableColumn fx:id="amountColumn" text="Amount" prefWidth="150"/>
+                        <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="75"/>
                     </columns>
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>

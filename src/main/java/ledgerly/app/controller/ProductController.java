@@ -3,15 +3,14 @@ package ledgerly.app.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import ledgerly.app.db.DatabaseManager;
 import ledgerly.app.model.Product;
 import ledgerly.app.model.User;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ProductController {
@@ -74,7 +73,28 @@ public class ProductController {
     }
 
     private void handleDeleteProduct(Product product) {
-        if (product != null) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Product");
+        alert.setHeaderText("Are you sure you want to delete this product?");
+        alert.setContentText( "Product: " + product.getProductName());
+
+
+        alert.setGraphic(null);
+
+        // Apply styles to the dialog
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/ledgerly/app/css/styles.css")).toExternalForm());
+        dialogPane.getStyleClass().add("modal-root");
+        dialogPane.lookup(".header-panel").getStyleClass().add("subtitle-label");
+
+        Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
+        Button cancelButton = (Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL);
+
+        okButton.getStyleClass().add("add-button");
+        cancelButton.getStyleClass().add("cancel-button");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             DatabaseManager.deleteProduct(product.getProductId());
             loadProducts();
         }

@@ -39,7 +39,6 @@ public class ProductListCell extends ListCell<Product> {
 
         editButton = new Button();
         editButton.getStyleClass().add("edit-icon-button");
-        // prevent the button from taking keyboard focus (avoid focus ring / visual interference)
         editButton.setFocusTraversable(false);
         editButton.setOnAction(e -> {
             Product p = getItem();
@@ -55,15 +54,15 @@ public class ProductListCell extends ListCell<Product> {
         });
 
         // Try to set icons (safe if SVG can't be loaded)
-        Node editIcon = createSvgGraphic("/ledgerly/app/svg/pencil-square.svg", 16, Color.web("#333333"));
+        Node editIcon = createSvgGraphic("/ledgerly/app/svg/pencil-square.svg", 16, Color.web("#007bff"));
         if (editIcon != null) editButton.setGraphic(editIcon);
 
-        Node deleteIcon = createSvgGraphic("/ledgerly/app/svg/trash.svg", 16, Color.web("#333333"));
+        Node deleteIcon = createSvgGraphic("/ledgerly/app/svg/trash.svg", 16, Color.web("#dc3545"));
         if (deleteIcon != null) deleteButton.setGraphic(deleteIcon);
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        content = new HBox(12, nameLabel, spacer, editButton, deleteButton);
+        content = new HBox(8, nameLabel, spacer, editButton, deleteButton);
         content.setAlignment(Pos.CENTER_LEFT);
     }
 

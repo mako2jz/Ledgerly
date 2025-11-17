@@ -85,6 +85,32 @@ public class DatabaseManager {
         }
     }
 
+    public static void updateSale(int saleId, int productId, double amount, String description) {
+        String sql = "UPDATE sales SET product_id = ?, amount = ?, description = ? WHERE sale_id = ?";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, productId);
+            pstmt.setDouble(2, amount);
+            pstmt.setString(3, description);
+            pstmt.setInt(4, saleId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error updating sale: " + e.getMessage());
+        }
+    }
+
+    public static void deleteSale(int saleId) {
+        String sql = "DELETE FROM sales WHERE sale_id = ?";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, saleId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error deleting sale: " + e.getMessage());
+        }
+    }
+
+
     public static List<Product> getProductsForUser(int userId) {
         String sql = "SELECT product_id, product_name FROM products WHERE user_id = ?";
         List<Product> products = new ArrayList<>();

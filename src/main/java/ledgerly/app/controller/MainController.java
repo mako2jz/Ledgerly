@@ -109,6 +109,7 @@ public class MainController {
                 }
 
                 dashboardStage.setScene(scene);
+                dashboardStage.setMaximized(true);
                 dashboardStage.show();
 
             } catch (IOException e) {

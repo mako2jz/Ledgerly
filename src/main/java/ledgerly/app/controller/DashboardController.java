@@ -4,33 +4,33 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.scene.control.TableCell;
 import javafx.util.Callback;
 import ledgerly.app.model.Sale;
 import ledgerly.app.Main;
 import ledgerly.app.db.DatabaseManager;
-import ledgerly.app.model.Sale;
 import ledgerly.app.model.User;
+
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,6 +57,8 @@ public class DashboardController {
     @FXML
     private TableView<Sale> salesTableView;
     @FXML
+    private TableColumn<Sale, Integer> idColumn;
+    @FXML
     private TableColumn<Sale, String> dateColumn;
     @FXML
     private TableColumn<Sale, String> productColumn;
@@ -64,6 +66,9 @@ public class DashboardController {
     private TableColumn<Sale, String> descriptionColumn;
     @FXML
     private TableColumn<Sale, Double> amountColumn;
+    @FXML
+    private TableColumn<Sale, Void> actionsColumn;
+
 
     public void initialize() {
         productsButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/basket.svg", 16, Color.web("white")));
@@ -88,6 +93,8 @@ public class DashboardController {
                 };
             }
         });
+
+        setupActionsColumn();
     }
 
     public void initData(User user) {
@@ -114,12 +121,121 @@ public class DashboardController {
         avgSaleLabel.setText(String.format("₱%.2f", avgSale));
 
         // Populate table
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("saleId"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
         productColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
         salesTableView.setItems(observableSales);
     }
+
+    private void setupActionsColumn() {
+        Callback<TableColumn<Sale, Void>, TableCell<Sale, Void>> cellFactory = new Callback<>() {
+            @Override
+            public TableCell<Sale, Void> call(final TableColumn<Sale, Void> param) {
+                return new TableCell<>() {
+                    private final Button editButton = new Button();
+                    private final Button deleteButton = new Button();
+                    private final HBox pane = new HBox(10, editButton, deleteButton);
+
+                    {
+                        pane.setAlignment(Pos.CENTER);
+                        editButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/pencil-square.svg", 14, Color.web("#007bff")));
+                        deleteButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/trash.svg", 14, Color.web("#dc3545")));
+                        editButton.getStyleClass().add("edit-icon-button");
+                        deleteButton.getStyleClass().add("delete-icon-button");
+
+                        editButton.setOnAction(event -> {
+                            Sale sale = getTableView().getItems().get(getIndex());
+                            handleEditSale(sale);
+                        });
+
+                        deleteButton.setOnAction(event -> {
+                            Sale sale = getTableView().getItems().get(getIndex());
+                            handleDeleteSale(sale);
+                        });
+                    }
+
+                    @Override
+                    protected void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(pane);
+                        }
+                    }
+                };
+            }
+        };
+        actionsColumn.setCellFactory(cellFactory);
+    }
+
+    private void handleEditSale(Sale sale) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ledgerly/app/view/EditSaleView.fxml"));
+            Parent root = loader.load();
+
+            EditSaleController controller = loader.getController();
+            controller.initData(sale, currentUser);
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Edit Sale");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(salesTableView.getScene().getWindow());
+            dialogStage.initStyle(StageStyle.UNDECORATED);
+
+            Scene scene = new Scene(root);
+            URL cssUrl = getClass().getResource("/ledgerly/app/css/styles.css");
+            if (cssUrl != null) {
+                scene.getStylesheets().add(cssUrl.toExternalForm());
+            }
+
+            dialogStage.setScene(scene);
+            dialogStage.showAndWait();
+
+            if (controller.isSaleUpdated()) {
+                loadDashboardData();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleDeleteSale(Sale sale) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Sale");
+        alert.setHeaderText("Are you sure you want to delete this sale?");
+        alert.setContentText(
+                "Sale ID: " + sale.getSaleId() +
+                        "\nDate: " + sale.getCreatedAt() +
+                        "\nProduct: " + sale.getProductName() +
+                        "\nAmount: " + sale.getAmount() +
+                        "\nDescription: " + sale.getDescription()
+        );
+
+
+        alert.setGraphic(null);
+
+        // Apply styles to the dialog
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/ledgerly/app/css/styles.css")).toExternalForm());
+        dialogPane.getStyleClass().add("modal-root");
+        dialogPane.lookup(".header-panel").getStyleClass().add("subtitle-label");
+        Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
+        Button cancelButton = (Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL);
+
+        okButton.getStyleClass().add("add-button");
+        cancelButton.getStyleClass().add("cancel-button");
+
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            DatabaseManager.deleteSale(sale.getSaleId());
+            loadDashboardData();
+        }
+    }
+
 
     @FXML
     private void handleAddSaleButton() {

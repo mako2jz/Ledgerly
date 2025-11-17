@@ -155,6 +155,25 @@
     -fx-border-color: transparent;
 }
 
+.text-area {
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 8;
+    -fx-padding: 10 15 10 15;
+
+    /* Remove default border + focus ring */
+    -fx-border-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+/* The inner scrollable content area */
+.text-area .content {
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 8;
+    -fx-padding: 0; /* Important or you get double padding */
+    -fx-border-color: transparent;
+}
+
 .toast-label {
     -fx-background-color: #00A859;
     -fx-text-fill: white;
@@ -263,7 +282,6 @@
     -fx-padding: 8 10 8 10;
 }
 
-
 /* Cells and rows */
 .dashboard-table .table-cell {
     -fx-padding: 8 12 8 12;
@@ -289,4 +307,36 @@
 .dashboard-table .amount-cell {
     -fx-alignment: CENTER_LEFT;
     -fx-font-weight: bold;
+}
+
+.combo-box {
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: transparent;
+    -fx-font-size: 14px;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 8 0 8;
+    -fx-background-radius: 8;
+}
+
+.combo-box .arrow-button:hover {
+    -fx-background-color: #EDEDED;
+}
+
+.combo-box .arrow {
+    -fx-background-color: #666666; /* subtle icon */
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-text-fill: black;
+    -fx-background-color: #F5F5F5; /* same hover as list cells */
+}
+
+.combo-box-popup .list-cell:selected {
+    -fx-text-fill: black;
+    -fx-background-color: #F5F5F5; /* same hover as list cells */
 }
