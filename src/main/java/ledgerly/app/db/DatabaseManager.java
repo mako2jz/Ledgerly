@@ -40,6 +40,55 @@ public class DatabaseManager {
         }
     }
 
+    public static void deleteUser(int userId) {
+        String deleteSalesSql = "DELETE FROM sales WHERE user_id = ?";
+        String deleteProductsSql = "DELETE FROM products WHERE user_id = ?";
+        String deleteUserSql = "DELETE FROM users WHERE id = ?";
+
+        Connection conn = null;
+        try {
+            conn = Database.getConnection();
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement pstmtSales = conn.prepareStatement(deleteSalesSql)) {
+                pstmtSales.setInt(1, userId);
+                pstmtSales.executeUpdate();
+            }
+
+            try (PreparedStatement pstmtProducts = conn.prepareStatement(deleteProductsSql)) {
+                pstmtProducts.setInt(1, userId);
+                pstmtProducts.executeUpdate();
+            }
+
+            try (PreparedStatement pstmtUser = conn.prepareStatement(deleteUserSql)) {
+                pstmtUser.setInt(1, userId);
+                pstmtUser.executeUpdate();
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            System.err.println("Transaction failed, rolling back. " + e.getMessage());
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    System.err.println("Error on rollback: " + ex.getMessage());
+                }
+            }
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true); // Restore default behavior
+                    conn.close();
+                } catch (SQLException e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+        }
+    }
+
+
     public static List<Sale> getSalesForUser(int userId) {
         // Use LEFT JOIN and COALESCE to handle deleted products
         String sql = "SELECT s.sale_id, s.created_at, s.amount, s.description, COALESCE(p.product_name, 'Unknown Product') as product_name " +

@@ -46,6 +46,8 @@ public class DashboardController {
     @FXML
     private Button productsButton;
     @FXML
+    private Button deleteUserButton;
+    @FXML
     private Button logoutButton;
     @FXML
     private Button addSaleButton; // New button
@@ -69,6 +71,7 @@ public class DashboardController {
 
     public void initialize() {
         productsButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/basket.svg", 16, Color.web("white")));
+        deleteUserButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/trash.svg", 16, Color.web("white")));
         logoutButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/arrow-bar-left.svg", 16, Color.web("#333333")));
         amountColumn.setCellFactory(new Callback<TableColumn<Sale, Double>, TableCell<Sale, Double>>() {
             @Override
@@ -344,6 +347,47 @@ public class DashboardController {
 
             // Refresh sales data in case product names changed
             loadDashboardData();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleDeleteUserButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ledgerly/app/view/DeleteUserView.fxml"));
+            Parent root = loader.load();
+
+            DeleteUserController controller = loader.getController();
+            controller.initData(currentUser);
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Delete User");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(deleteUserButton.getScene().getWindow());
+            dialogStage.initStyle(StageStyle.UNDECORATED);
+
+            Scene scene = new Scene(root);
+            URL cssUrl = getClass().getResource("/ledgerly/app/css/styles.css");
+            if (cssUrl != null) {
+                scene.getStylesheets().add(cssUrl.toExternalForm());
+            }
+
+            dialogStage.setScene(scene);
+            dialogStage.setResizable(false);
+            dialogStage.showAndWait();
+
+            if (controller.isConfirmed()) {
+                // Close current dashboard and return to login
+                Stage currentStage = (Stage) deleteUserButton.getScene().getWindow();
+                currentStage.close();
+                DatabaseManager.deleteUser(currentUser.getId());
+
+                // Re-launch the main application window
+                Stage mainStage = new Stage();
+                new Main().start(mainStage);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -116,6 +116,7 @@
 /* ============================
    Buttons
    ============================ */
+.delete-button,
 .add-button,
 .cancel-button,
 .sidebar-button {
@@ -123,6 +124,15 @@
     -fx-font-weight: bold;
     -fx-background-radius: 8;
     -fx-padding: 12 20 12 20;
+}
+
+.delete-button {
+    -fx-background-color: #dc3545;
+    -fx-text-fill: white;
+}
+
+.delete-button:hover {
+    -fx-background-color: rgba(220, 53, 69, 0.58);
 }
 
 .add-button {
