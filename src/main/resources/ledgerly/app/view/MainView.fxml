@@ -18,7 +18,7 @@
         </padding>
 
         <Label fx:id="titleLabel" text="Welcome to Ledgerly" styleClass="title-label"/>
-        <Label text="Select your profile to continue" styleClass="subtitle-label">
+        <Label text="Select your profile to continue, or create a new one to start" styleClass="subtitle-label">
             <VBox.margin>
                 <Insets bottom="20"/>
             </VBox.margin>

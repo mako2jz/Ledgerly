@@ -24,6 +24,7 @@
     <VBox spacing="5">
         <Label text="Product" styleClass="subtitle-label"/>
         <ComboBox fx:id="productComboBox" promptText="Search or select a product" maxWidth="Infinity" editable="true"/>
+        <Label text="Can't add a product? Try creating one first under Products." style="-fx-text-fill: #666666"/>
     </VBox>
 
     <VBox spacing="5">
