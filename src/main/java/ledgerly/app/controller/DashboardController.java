@@ -5,15 +5,14 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.SVGPath;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -22,17 +21,13 @@ import ledgerly.app.model.Sale;
 import ledgerly.app.Main;
 import ledgerly.app.db.DatabaseManager;
 import ledgerly.app.model.User;
-
+import ledgerly.app.util.Toast;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static ledgerly.app.util.SvgLoader.createSvgGraphic;
 
 public class DashboardController {
 
@@ -68,6 +63,8 @@ public class DashboardController {
     private TableColumn<Sale, Double> amountColumn;
     @FXML
     private TableColumn<Sale, Void> actionsColumn;
+    @FXML
+    private VBox toastContainer;
 
 
     public void initialize() {
@@ -93,7 +90,13 @@ public class DashboardController {
                 };
             }
         });
+
         setupActionsColumn();
+
+        if (toastContainer != null) {
+            toastContainer.setPickOnBounds(false);
+            toastContainer.setMaxWidth(Region.USE_PREF_SIZE);
+        }
     }
 
     public void initData(User user) {
@@ -213,7 +216,6 @@ public class DashboardController {
         }
     }
 
-
     private void handleEditSale(Sale sale) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ledgerly/app/view/EditSaleView.fxml"));
@@ -239,6 +241,7 @@ public class DashboardController {
 
             if (controller.isSaleUpdated()) {
                 loadDashboardData();
+                Toast.show(toastContainer, "Sale updated successfully!");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -246,42 +249,40 @@ public class DashboardController {
     }
 
     private void handleDeleteSale(Sale sale) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Delete Sale");
-        alert.setHeaderText("Are you sure you want to delete this sale?");
-        alert.setContentText(
-                "Sale ID: " + sale.getSaleId() +
-                        "\nDate: " + sale.getCreatedAt() +
-                        "\nProduct: " + sale.getProductName() +
-                        "\nAmount: " + sale.getAmount() +
-                        "\nDescription: " + sale.getDescription()
-        );
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ledgerly/app/view/DeleteSaleView.fxml"));
+            Parent root = loader.load();
 
+            DeleteSaleController controller = loader.getController();
+            controller.initData(sale);
 
-        alert.setGraphic(null);
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Delete Sale");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(salesTableView.getScene().getWindow());
+            dialogStage.initStyle(StageStyle.UNDECORATED);
 
-        // Apply styles to the dialog
-        DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/ledgerly/app/css/styles.css")).toExternalForm());
-        dialogPane.getStyleClass().add("modal-root");
-        dialogPane.lookup(".header-panel").getStyleClass().add("subtitle-label");
-        Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
-        Button cancelButton = (Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL);
+            Scene scene = new Scene(root);
+            URL cssUrl = getClass().getResource("/ledgerly/app/css/styles.css");
+            if (cssUrl != null) {
+                scene.getStylesheets().add(cssUrl.toExternalForm());
+            }
 
-        okButton.getStyleClass().add("add-button");
-        cancelButton.getStyleClass().add("cancel-button");
+            dialogStage.setScene(scene);
+            dialogStage.showAndWait();
 
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            DatabaseManager.deleteSale(sale.getSaleId());
-            loadDashboardData();
+            if (controller.isConfirmed()) {
+                DatabaseManager.deleteSale(sale.getSaleId());
+                loadDashboardData(); // Refresh the sales list
+                Toast.show(toastContainer, "Sale deleted successfully!");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-
     @FXML
-    private void handleAddSaleButton() {
+    private void handleAddSale() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ledgerly/app/view/AddSaleView.fxml"));
             Parent root = loader.load();
@@ -308,6 +309,7 @@ public class DashboardController {
             // If a sale was added, refresh the dashboard
             if (controller.isSaleAdded()) {
                 loadDashboardData();
+                Toast.show(toastContainer, "Sale added successfully!");
             }
 
         } catch (IOException e) {
@@ -362,39 +364,4 @@ public class DashboardController {
         }
     }
 
-    private Node createSvgGraphic(String resourcePath, double targetSizePx, Color fill) {
-        try (InputStream is = getClass().getResourceAsStream(resourcePath)) {
-            if (is == null) {
-                System.err.println("Cannot find SVG resource: " + resourcePath);
-                return null;
-            }
-            String svg = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-            Pattern pathPattern = Pattern.compile("(?i)d\\s*=\\s*['\"]([^'\"]+)['\"]");
-            Matcher pathMatcher = pathPattern.matcher(svg);
-            Group group = new Group();
-            while (pathMatcher.find()) {
-                SVGPath svgPath = new SVGPath();
-                svgPath.setContent(pathMatcher.group(1));
-                svgPath.setFill(fill);
-                group.getChildren().add(svgPath);
-            }
-            if (group.getChildren().isEmpty()) return null;
-
-            double originalWidth = 16; // Default
-            Pattern vbPattern = Pattern.compile("(?i)viewBox\\s*=\\s*['\"]([-\\d\\.]+)\\s+([-\\d\\.]+)\\s+([-\\d\\.]+)\\s+([-\\d\\.]+)['\"]");
-            Matcher vbMatcher = vbPattern.matcher(svg);
-            if (vbMatcher.find()) {
-                try {
-                    originalWidth = Double.parseDouble(vbMatcher.group(3));
-                } catch (NumberFormatException ignored) {}
-            }
-            double scale = (originalWidth > 0) ? targetSizePx / originalWidth : 1.0;
-            group.setScaleX(scale);
-            group.setScaleY(scale);
-            return group;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
 }

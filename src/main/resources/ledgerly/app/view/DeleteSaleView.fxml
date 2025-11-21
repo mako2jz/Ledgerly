@@ -8,9 +8,10 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.layout.HBox?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="ledgerly.app.controller.ViewSaleController"
+      fx:controller="ledgerly.app.controller.DeleteSaleController"
       alignment="CENTER_LEFT" spacing="20"
       styleClass="modal-root" prefWidth="450">
 
@@ -18,7 +19,9 @@
         <Insets top="20" right="30" bottom="30" left="30"/>
     </padding>
 
-    <Label fx:id="titleLabel" text="Sale Details" styleClass="title-label"/>
+    <Label fx:id="titleLabel" text="Delete Sale" styleClass="title-label"/>
+
+    <Label fx:id="saleDetailsLabel" text="Are you sure you want to delete this sale?" wrapText="true" styleClass="subtitle-label" alignment="CENTER"/>
 
     <GridPane hgap="10" vgap="12">
         <columnConstraints>
@@ -46,10 +49,8 @@
         </rowConstraints>
     </GridPane>
 
-    <Button text="Close" onAction="#handleClose" styleClass="add-button" maxWidth="Infinity">
-        <VBox.margin>
-            <Insets top="10"/>
-        </VBox.margin>
-    </Button>
-
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="cancelButton" text="Cancel" onAction="#handleCancel" styleClass="cancel-button"/>
+        <Button fx:id="confirmButton" text="Delete" onAction="#handleConfirm" styleClass="add-button"/>
+    </HBox>
 </VBox>

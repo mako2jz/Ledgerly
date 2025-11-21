@@ -23,6 +23,8 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import ledgerly.app.db.DatabaseManager;
 import ledgerly.app.model.User;
+import ledgerly.app.util.Toast;
+import ledgerly.app.util.SvgLoader;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -154,89 +156,11 @@ public class MainController {
             if (newUsername != null && !newUsername.isEmpty()) {
                 DatabaseManager.addUser(newUsername);
                 loadUsers(); // Refresh the user list
-                showToast("User successfully added");
+                Toast.show(toastContainer, "User added successfully!");
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void showToast(String message) {
-        Label toast = new Label(message);
-        toast.getStyleClass().add("toast-label");
-
-        Node icon = createSvgGraphic("/ledgerly/app/svg/check.svg");
-        if (icon != null) {
-            toast.setGraphic(icon);
-            toast.setGraphicTextGap(8);
-        }
-
-        toast.setOpacity(0);
-        toast.setTranslateY(20);
-        toast.setMouseTransparent(false);
-        toast.setPickOnBounds(true);
-        toast.setMaxWidth(Region.USE_PREF_SIZE);
-
-        if (toastContainer != null) {
-            toastContainer.getChildren().add(0, toast);
-        }
-
-        TranslateTransition slideUp = new TranslateTransition(Duration.millis(400), toast);
-        slideUp.setToY(0);
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(400), toast);
-        fadeIn.setToValue(1);
-        ParallelTransition showTransition = new ParallelTransition(slideUp, fadeIn);
-
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(400), toast);
-        fadeOut.setToValue(0);
-        TranslateTransition slideDown = new TranslateTransition(Duration.millis(400), toast);
-        slideDown.setToY(20);
-        ParallelTransition hideTransition = new ParallelTransition(slideDown, fadeOut);
-        hideTransition.setOnFinished(e -> {
-            if (toastContainer != null) {
-                toastContainer.getChildren().remove(toast);
-            }
-        });
-
-        SequentialTransition sequentialTransition = new SequentialTransition(
-                showTransition,
-                new PauseTransition(Duration.seconds(3)),
-                hideTransition
-        );
-        sequentialTransition.play();
-    }
-
-    private Node createSvgGraphic(String resourcePath) {
-        try (InputStream is = getClass().getResourceAsStream(resourcePath)) {
-            if (is == null) return null;
-            String svg = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-            Pattern pathPattern = Pattern.compile("(?i)d\\s*=\\s*['\"]([^'\"]+)['\"]");
-            Matcher pathMatcher = pathPattern.matcher(svg);
-            Group group = new Group();
-            while (pathMatcher.find()) {
-                SVGPath svgPath = new SVGPath();
-                svgPath.setContent(pathMatcher.group(1));
-                svgPath.setFill(Color.WHITE);
-                group.getChildren().add(svgPath);
-            }
-            if (group.getChildren().isEmpty()) return null;
-
-            double originalWidth = 16;
-            Pattern vbPattern = Pattern.compile("(?i)viewBox\\s*=\\s*['\"]([-\\d\\.]+)\\s+([-\\d\\.]+)\\s+([-\\d\\.]+)\\s+([-\\d\\.]+)['\"]");
-            Matcher vbMatcher = vbPattern.matcher(svg);
-            if (vbMatcher.find()) {
-                try {
-                    originalWidth = Double.parseDouble(vbMatcher.group(3));
-                } catch (NumberFormatException ignored) {}
-            }
-            double scale = (originalWidth > 0) ? 16 / originalWidth : 1.0;
-            group.setScaleX(scale);
-            group.setScaleY(scale);
-            group.setMouseTransparent(true);
-            return group;
-        } catch (IOException ex) {
-            return null;
         }
     }
 }

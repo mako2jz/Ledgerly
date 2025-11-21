@@ -4,82 +4,96 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="ledgerly.app.controller.DashboardController"
-            prefHeight="760.0" prefWidth="1000.0" styleClass="root">
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="ledgerly.app.controller.DashboardController"
+           prefHeight="760.0" prefWidth="1000.0">
 
-    <!-- Sidebar -->
-    <left>
-        <VBox style="-fx-background-color: #00A859; -fx-border-width: 0 1 0 0; -fx-border-color: #008F4A;"
-              spacing="10" prefWidth="250">
-            <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
-            </padding>
+    <!-- Main Dashboard UI -->
+    <BorderPane styleClass="root">
 
-            <Label text="Ledgerly Dashboard" styleClass="title-label-alt" wrapText="true"/>
-            <Label fx:id="sidebarUserLabel" text="{user}" styleClass="subtitle-label-alt"/>
+        <!-- Sidebar -->
+        <left>
+            <VBox style="-fx-background-color: #00A859; -fx-border-width: 0 1 0 0; -fx-border-color: #008F4A;"
+                  spacing="10" prefWidth="250">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
 
-            <Separator/>
+                <Label text="Ledgerly Dashboard" styleClass="title-label-alt" wrapText="true"/>
+                <Label fx:id="sidebarUserLabel" text="{user}" styleClass="subtitle-label-alt"/>
 
-            <Button fx:id="productsButton" text="Products" onAction="#handleProductsButton"
-                    maxWidth="Infinity" alignment="BASELINE_LEFT" styleClass="sidebar-button"/>
+                <Separator/>
 
-            <!-- Spacer to push logout to bottom -->
-            <Pane VBox.vgrow="ALWAYS"/>
+                <Button fx:id="productsButton" text="Products" onAction="#handleProductsButton"
+                        maxWidth="Infinity" alignment="BASELINE_LEFT" styleClass="sidebar-button"/>
 
-            <Button fx:id="logoutButton" text="Logout" onAction="#handleLogoutButton"
-                    maxWidth="Infinity" alignment="BASELINE_LEFT" styleClass="cancel-button"/>
-        </VBox>
-    </left>
+                <!-- Spacer to push logout to bottom -->
+                <Pane VBox.vgrow="ALWAYS"/>
 
-    <!-- Main Content -->
-    <center>
-        <VBox spacing="20">
-            <padding>
-                <Insets top="40" right="50" bottom="40" left="50"/>
-            </padding>
-
-            <Label fx:id="welcomeUserLabel" text="Welcome, {user}" styleClass="title-label"/>
-            <Label text="Here's your sales overview" styleClass="subtitle-label"/>
-
-            <!-- Stats Boxes -->
-            <HBox spacing="20" alignment="CENTER_LEFT">
-                <VBox styleClass="stat-box" HBox.hgrow="ALWAYS">
-                    <Label text="Total sales" styleClass="subtitle-label"/>
-                    <Label fx:id="totalSalesLabel" styleClass="stat-value"/>
-                </VBox>
-                <VBox styleClass="stat-box" HBox.hgrow="ALWAYS">
-                    <Label text="Number of sales" styleClass="subtitle-label"/>
-                    <Label fx:id="numSalesLabel" styleClass="stat-value"/>
-                </VBox>
-                <VBox styleClass="stat-box" HBox.hgrow="ALWAYS">
-                    <Label text="Average sale" styleClass="subtitle-label"/>
-                    <Label fx:id="avgSaleLabel" styleClass="stat-value"/>
-                </VBox>
-            </HBox>
-
-            <!-- Sales History Table -->
-            <VBox spacing="10" VBox.vgrow="ALWAYS">
-                <HBox alignment="CENTER_LEFT">
-                    <Label text="Sales History" styleClass="subtitle-label"/>
-                    <Pane HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="addSaleButton" text="+ Add Sale" onAction="#handleAddSaleButton" styleClass="add-button"/>
-                </HBox>
-                <TableView fx:id="salesTableView" VBox.vgrow="ALWAYS" styleClass="dashboard-table">
-                    <columns>
-                        <TableColumn fx:id="idColumn" text="Transaction No." prefWidth="75"/>
-                        <TableColumn fx:id="dateColumn" text="Date" prefWidth="125"/>
-                        <TableColumn fx:id="productColumn" text="Product" prefWidth="150"/>
-                        <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="200"/>
-                        <TableColumn fx:id="amountColumn" text="Amount" prefWidth="150"/>
-                        <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="75"/>
-                    </columns>
-                    <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                    </columnResizePolicy>
-                </TableView>
+                <Button fx:id="logoutButton" text="Logout" onAction="#handleLogoutButton"
+                        maxWidth="Infinity" alignment="BASELINE_LEFT" styleClass="cancel-button"/>
             </VBox>
-        </VBox>
-    </center>
-</BorderPane>
+        </left>
+
+        <!-- Main Content -->
+        <center>
+            <VBox spacing="20">
+                <padding>
+                    <Insets top="40" right="50" bottom="40" left="50"/>
+                </padding>
+
+                <Label fx:id="welcomeUserLabel" text="Welcome, {user}" styleClass="title-label"/>
+                <Label text="Here's your sales overview" styleClass="subtitle-label"/>
+
+                <!-- Stats Boxes -->
+                <HBox spacing="20" alignment="CENTER_LEFT">
+                    <VBox styleClass="stat-box" HBox.hgrow="ALWAYS">
+                        <Label text="Total sales" styleClass="subtitle-label"/>
+                        <Label fx:id="totalSalesLabel" styleClass="stat-value"/>
+                    </VBox>
+                    <VBox styleClass="stat-box" HBox.hgrow="ALWAYS">
+                        <Label text="Number of sales" styleClass="subtitle-label"/>
+                        <Label fx:id="numSalesLabel" styleClass="stat-value"/>
+                    </VBox>
+                    <VBox styleClass="stat-box" HBox.hgrow="ALWAYS">
+                        <Label text="Average sale" styleClass="subtitle-label"/>
+                        <Label fx:id="avgSaleLabel" styleClass="stat-value"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Sales History Table -->
+                <VBox spacing="10" VBox.vgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Sales History" styleClass="subtitle-label"/>
+                        <Pane HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="addSaleButton" text="+ Add Sale" onAction="#handleAddSale" styleClass="add-button"/>
+                    </HBox>
+                    <TableView fx:id="salesTableView" VBox.vgrow="ALWAYS" styleClass="dashboard-table">
+                        <columns>
+                            <TableColumn fx:id="idColumn" text="Transaction No." prefWidth="75"/>
+                            <TableColumn fx:id="dateColumn" text="Date" prefWidth="125"/>
+                            <TableColumn fx:id="productColumn" text="Product" prefWidth="150"/>
+                            <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="200"/>
+                            <TableColumn fx:id="amountColumn" text="Amount" prefWidth="150"/>
+                            <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="75"/>
+                        </columns>
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        </columnResizePolicy>
+                    </TableView>
+                </VBox>
+            </VBox>
+        </center>
+
+    </BorderPane>
+
+    <!-- Toast Container (on top layer) -->
+    <VBox fx:id="toastContainer" spacing="8" alignment="BOTTOM_RIGHT"
+          StackPane.alignment="BOTTOM_RIGHT">
+        <StackPane.margin>
+            <Insets bottom="20" right="20"/>
+        </StackPane.margin>
+    </VBox>
+
+</StackPane>

@@ -1,7 +1,6 @@
 package ledgerly.app.controller;
 
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -10,15 +9,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.SVGPath;
 import ledgerly.app.model.Product;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static ledgerly.app.util.SvgLoader.createSvgGraphic;
 
 public class ProductListCell extends ListCell<Product> {
 
@@ -75,41 +70,6 @@ public class ProductListCell extends ListCell<Product> {
         } else {
             nameLabel.setText(product.getProductName());
             setGraphic(content);
-        }
-    }
-
-    private Node createSvgGraphic(String resourcePath, double targetSize, Color fill) {
-        try (InputStream is = getClass().getResourceAsStream(resourcePath)) {
-            if (is == null) return null;
-            String svg = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-            Pattern pathPattern = Pattern.compile("(?i)d\\s*=\\s*['\"]([^'\"]+)['\"]");
-            Matcher pathMatcher = pathPattern.matcher(svg);
-            Group group = new Group();
-            while (pathMatcher.find()) {
-                SVGPath svgPath = new SVGPath();
-                svgPath.setContent(pathMatcher.group(1));
-                svgPath.setFill(fill);
-                group.getChildren().add(svgPath);
-            }
-            if (group.getChildren().isEmpty()) return null;
-
-            double originalWidth = 16; // Default
-            Pattern vbPattern = Pattern.compile("(?i)viewBox\\s*=\\s*['\"]([-\\d\\.]+)\\s+([-\\d\\.]+)\\s+([-\\d\\.]+)\\s+([-\\d\\.]+)['\"]");
-            Matcher vbMatcher = vbPattern.matcher(svg);
-            if (vbMatcher.find()) {
-                try {
-                    originalWidth = Double.parseDouble(vbMatcher.group(3));
-                } catch (NumberFormatException ignored) {}
-            }
-            double scale = (originalWidth > 0) ? targetSize / originalWidth : 1.0;
-            group.setScaleX(scale);
-            group.setScaleY(scale);
-
-            // Make the graphic non-interactive so clicks/focus go to the Button, not the SVG nodes
-            group.setMouseTransparent(true);
-            return group;
-        } catch (IOException ex) {
-            return null;
         }
     }
 }

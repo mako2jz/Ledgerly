@@ -4,11 +4,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import ledgerly.app.model.Sale;
-
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-
 public class ViewSaleController {
 
     @FXML

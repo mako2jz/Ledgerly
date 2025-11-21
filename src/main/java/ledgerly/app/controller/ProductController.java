@@ -3,15 +3,23 @@ package ledgerly.app.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import ledgerly.app.db.DatabaseManager;
 import ledgerly.app.model.Product;
 import ledgerly.app.model.User;
+import ledgerly.app.util.Toast;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 public class ProductController {
 
@@ -24,6 +32,8 @@ public class ProductController {
     private TextField productNameField;
     @FXML
     private Button addProductButton;
+    @FXML
+    private VBox toastContainer;
 
     @FXML
     public void initialize() {
@@ -34,6 +44,11 @@ public class ProductController {
         });
 
         productListView.setCellFactory(param -> new ProductListCell(this::handleEditProduct, this::handleDeleteProduct));
+
+        if (toastContainer != null) {
+            toastContainer.setPickOnBounds(false);
+            toastContainer.setMaxWidth(Region.USE_PREF_SIZE);
+        }
     }
 
     public void initData(User user) {
@@ -54,50 +69,68 @@ public class ProductController {
             DatabaseManager.addProduct(currentUser.getId(), productName);
             loadProducts();
             productNameField.clear();
+            Toast.show(toastContainer, "Product added successfully!");
         }
     }
 
     private void handleEditProduct(Product product) {
-        if (product == null) return;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ledgerly/app/view/EditProductView.fxml"));
+            Parent root = loader.load();
 
-        // Use the custom dialog instead of TextInputDialog
-        CustomEditDialog dialog = new CustomEditDialog(product.getProductName());
+            EditProductController controller = loader.getController();
+            controller.initData(product);
 
-        Optional<String> result = dialog.showAndWait();
-        result.ifPresent(newName -> {
-            if (!newName.trim().isEmpty() && !newName.equals(product.getProductName())) {
-                DatabaseManager.updateProduct(product.getProductId(), newName.trim());
-                loadProducts(); // Refresh the list
+            Stage dialogStage = createModalStage("Edit Product", root);
+            dialogStage.showAndWait();
+
+            String newName = controller.getNewProductName();
+            if (newName != null && !newName.isEmpty() && !newName.equals(product.getProductName())) {
+                DatabaseManager.updateProduct(product.getProductId(), newName);
+                loadProducts();
+                Toast.show(toastContainer, "Product updated successfully!");
             }
-        });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleDeleteProduct(Product product) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Delete Product");
-        alert.setHeaderText("Are you sure you want to delete this product?");
-        alert.setContentText( "Product: " + product.getProductName());
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ledgerly/app/view/DeleteProductView.fxml"));
+            Parent root = loader.load();
 
+            DeleteProductController controller = loader.getController();
+            controller.initData(product);
 
-        alert.setGraphic(null);
+            Stage dialogStage = createModalStage("Delete Product", root);
+            dialogStage.showAndWait();
 
-        // Apply styles to the dialog
-        DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/ledgerly/app/css/styles.css")).toExternalForm());
-        dialogPane.getStyleClass().add("modal-root");
-        dialogPane.lookup(".header-panel").getStyleClass().add("subtitle-label");
-
-        Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
-        Button cancelButton = (Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL);
-
-        okButton.getStyleClass().add("add-button");
-        cancelButton.getStyleClass().add("cancel-button");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            DatabaseManager.deleteProduct(product.getProductId());
-            loadProducts();
+            if (controller.isConfirmed()) {
+                DatabaseManager.deleteProduct(product.getProductId());
+                loadProducts();
+                Toast.show(toastContainer, "Product deleted successfully!");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    private Stage createModalStage(String title, Parent root) {
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle(title);
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.initOwner(productListView.getScene().getWindow());
+        dialogStage.initStyle(StageStyle.UNDECORATED);
+
+        Scene scene = new Scene(root);
+        URL cssUrl = getClass().getResource("/ledgerly/app/css/styles.css");
+        if (cssUrl != null) {
+            scene.getStylesheets().add(cssUrl.toExternalForm());
+        }
+        dialogStage.setScene(scene);
+        dialogStage.setResizable(false);
+        return dialogStage;
     }
 
     @FXML

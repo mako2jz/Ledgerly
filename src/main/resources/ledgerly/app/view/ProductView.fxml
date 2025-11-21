@@ -1,30 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="ledgerly.app.controller.ProductController"
-      alignment="CENTER_LEFT" spacing="15"
-      styleClass="modal-root" prefWidth="400">
+      alignment="TOP_CENTER" spacing="20"
+      styleClass="modal-root" prefWidth="450">
 
     <padding>
-        <Insets top="20" right="30" bottom="20" left="30"/>
+        <Insets top="20" right="30" bottom="30" left="30"/>
     </padding>
 
-    <Label text="Manage Products" styleClass="title-label" alignment="CENTER"/>
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label text="Manage Products" styleClass="title-label-edit" HBox.hgrow="ALWAYS"/>
+    </HBox>
 
-    <ListView fx:id="productListView" prefHeight="200"/>
+    <!-- Nested StackPane for ListView + toast -->
+    <StackPane VBox.vgrow="ALWAYS" maxHeight="400">
+        <ListView fx:id="productListView" VBox.vgrow="ALWAYS" minHeight="200" maxHeight="400"/>
 
-    <VBox spacing="5">
-        <Label text="New Product Name" styleClass="subtitle-label"/>
-        <TextField fx:id="productNameField" promptText="Enter product name"/>
-    </VBox>
+        <!-- Toast container aligned bottom-left inside StackPane -->
+        <VBox fx:id="toastContainer" spacing="8" alignment="BOTTOM_RIGHT" StackPane.alignment="BOTTOM_RIGHT" pickOnBounds="false">
+            <StackPane.margin>
+                <!-- Small margin so it is just above the input field -->
+                <Insets bottom="10"/>
+            </StackPane.margin>
+        </VBox>
+    </StackPane>
+
+    <!-- Input field and Add button -->
+    <HBox spacing="10">
+        <TextField fx:id="productNameField" promptText="Enter new product name" HBox.hgrow="ALWAYS"/>
+        <Button fx:id="addProductButton" text="Add Product" onAction="#handleAddProduct" styleClass="add-button"/>
+    </HBox>
 
     <HBox spacing="10" alignment="CENTER">
         <Button text="Close" onAction="#handleClose" styleClass="cancel-button"/>
-        <Button fx:id="addProductButton" text="Add Product" onAction="#handleAddProduct" styleClass="add-button"/>
     </HBox>
+
 </VBox>
