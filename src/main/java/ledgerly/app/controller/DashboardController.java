@@ -93,7 +93,6 @@ public class DashboardController {
                 };
             }
         });
-
         setupActionsColumn();
     }
 
@@ -134,16 +133,24 @@ public class DashboardController {
             @Override
             public TableCell<Sale, Void> call(final TableColumn<Sale, Void> param) {
                 return new TableCell<>() {
+                    private final Button viewButton = new Button();
                     private final Button editButton = new Button();
                     private final Button deleteButton = new Button();
-                    private final HBox pane = new HBox(10, editButton, deleteButton);
+                    private final HBox pane = new HBox(10, viewButton, editButton, deleteButton);
 
                     {
                         pane.setAlignment(Pos.CENTER);
+                        viewButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/eye.svg", 14, Color.web("#919191")));
                         editButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/pencil-square.svg", 14, Color.web("#007bff")));
                         deleteButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/trash.svg", 14, Color.web("#dc3545")));
+                        viewButton.getStyleClass().add("view-icon-button");
                         editButton.getStyleClass().add("edit-icon-button");
                         deleteButton.getStyleClass().add("delete-icon-button");
+
+                        viewButton.setOnAction(event -> {
+                            Sale sale = getTableView().getItems().get(getIndex());
+                            handleViewSale(sale);
+                        });
 
                         editButton.setOnAction(event -> {
                             Sale sale = getTableView().getItems().get(getIndex());
@@ -170,6 +177,42 @@ public class DashboardController {
         };
         actionsColumn.setCellFactory(cellFactory);
     }
+
+    private void handleViewSale(Sale sale) {
+        if (sale == null) return;
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ledgerly/app/view/ViewSaleView.fxml"));
+            Parent root = loader.load();
+
+            ViewSaleController controller = loader.getController();
+            controller.initData(sale);
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.setTitle("View Sale");
+
+            Scene scene = new Scene(root);
+            URL cssUrl = getClass().getResource("/ledgerly/app/css/styles.css");
+            if (cssUrl != null) {
+                scene.getStylesheets().add(cssUrl.toExternalForm());
+            }
+
+            stage.setScene(scene);
+
+
+            // Set owner to the main window
+            Stage owner = (Stage) salesTableView.getScene().getWindow();
+            stage.initOwner(owner);
+
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void handleEditSale(Sale sale) {
         try {

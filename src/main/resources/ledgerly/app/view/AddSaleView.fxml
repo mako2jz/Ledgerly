@@ -13,7 +13,7 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="ledgerly.app.controller.AddSaleController"
       alignment="CENTER_LEFT" spacing="15"
-      styleClass="modal-root" prefWidth="400">
+      styleClass="modal-root" prefWidth="450">
 
     <padding>
         <Insets top="20" right="30" bottom="20" left="30"/>
@@ -23,8 +23,7 @@
 
     <VBox spacing="5">
         <Label text="Product" styleClass="subtitle-label"/>
-        <ComboBox fx:id="productComboBox" promptText="Select a product" maxWidth="Infinity"/>
-        <Label text="Can't add a product? Try creating one first under Products." style="-fx-text-fill: #666666"/>
+        <ComboBox fx:id="productComboBox" promptText="Search or select a product" maxWidth="Infinity" editable="true"/>
     </VBox>
 
     <VBox spacing="5">
@@ -39,6 +38,6 @@
 
     <HBox spacing="10" alignment="CENTER">
         <Button text="Cancel" onAction="#handleCancel" styleClass="cancel-button"/>
-        <Button fx:id="addSaleButton" text="Add Sale" onAction="#handleAddSale" styleClass="add-button"/>
+        <Button fx:id="addSaleButton" text="Save Sale" onAction="#handleAddSale" styleClass="add-button"/>
     </HBox>
 </VBox>

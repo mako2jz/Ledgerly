@@ -9,8 +9,6 @@ import java.util.List;
 
 public class DatabaseManager {
 
-    // ... existing getUsers and addUser methods
-
     public static List<User> getUsers() {
         String sql = "SELECT id, username FROM users";
         List<User> users = new ArrayList<>();

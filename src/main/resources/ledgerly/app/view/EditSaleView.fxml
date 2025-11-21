@@ -38,7 +38,7 @@
 
     <VBox spacing="5">
         <Label text="Product" styleClass="subtitle-label"/>
-        <ComboBox fx:id="productComboBox" promptText="Select a product" maxWidth="Infinity"/>
+        <ComboBox fx:id="productComboBox" promptText="Search or select a product" maxWidth="Infinity" editable="true"/>
     </VBox>
 
     <VBox spacing="5">

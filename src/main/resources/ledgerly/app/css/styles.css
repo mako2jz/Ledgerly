@@ -157,6 +157,7 @@
 }
 
 /* Icon buttons (edit/delete) - combined and deduplicated */
+.view-icon-button,
 .edit-icon-button,
 .delete-icon-button {
     -fx-background-color: transparent;
@@ -167,14 +168,16 @@
     -fx-border-color: transparent;
     -fx-background-radius: 50%;
 }
-
+.view-icon-button:hover,
 .edit-icon-button:hover,
 .delete-icon-button:hover,
+.view-icon-button:pressed,
 .edit-icon-button:pressed,
 .delete-icon-button:pressed {
     -fx-background-color: transparent;
 }
 
+.view-icon-button:hover,
 .delete-icon-button:hover,
 .edit-icon-button:hover {
     -fx-background-color: #F0F0F0;
