@@ -84,6 +84,7 @@
                             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                         </columnResizePolicy>
                     </TableView>
+                    <Pagination fx:id="salesPagination" maxWidth="Infinity"/>
                 </VBox>
             </VBox>
         </center>

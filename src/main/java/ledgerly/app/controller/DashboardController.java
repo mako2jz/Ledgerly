@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -17,9 +18,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
-import ledgerly.app.model.Sale;
 import ledgerly.app.Main;
 import ledgerly.app.db.DatabaseManager;
+import ledgerly.app.model.Sale;
 import ledgerly.app.model.User;
 import ledgerly.app.util.Toast;
 
@@ -30,6 +31,8 @@ import java.util.List;
 import static ledgerly.app.util.SvgLoader.createSvgGraphic;
 
 public class DashboardController {
+
+    private static final int PAGE_SIZE = 10; // Number of items per page
 
     private User currentUser;
 
@@ -43,14 +46,6 @@ public class DashboardController {
     private Label numSalesLabel;
     @FXML
     private Label avgSaleLabel;
-    @FXML
-    private Button productsButton;
-    @FXML
-    private Button deleteUserButton;
-    @FXML
-    private Button logoutButton;
-    @FXML
-    private Button addSaleButton; // New button
     @FXML
     private TableView<Sale> salesTableView;
     @FXML
@@ -66,31 +61,46 @@ public class DashboardController {
     @FXML
     private TableColumn<Sale, Void> actionsColumn;
     @FXML
+    private Pagination salesPagination;
+    @FXML
+    private Button addSaleButton;
+    @FXML
+    private Button productsButton;
+    @FXML
+    private Button deleteUserButton;
+    @FXML
+    private Button logoutButton;
+    @FXML
     private VBox toastContainer;
 
-
+    @FXML
     public void initialize() {
+        // Set up action buttons' graphics
         productsButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/basket.svg", 16, Color.web("white")));
         deleteUserButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/trash.svg", 16, Color.web("white")));
         logoutButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/arrow-bar-left.svg", 16, Color.web("#333333")));
-        amountColumn.setCellFactory(new Callback<TableColumn<Sale, Double>, TableCell<Sale, Double>>() {
+
+        // Set up table columns
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("saleId"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
+        productColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+        amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
+
+        // Custom cell factory for the amount to format as currency
+        amountColumn.setCellFactory(col -> new TableCell<>() {
             @Override
-            public TableCell<Sale, Double> call(TableColumn<Sale, Double> col) {
-                return new TableCell<>() {
-                    @Override
-                    protected void updateItem(Double value, boolean empty) {
-                        super.updateItem(value, empty);
-                        if (empty || value == null) {
-                            setText(null);
-                            getStyleClass().remove("amount-cell");
-                        } else {
-                            setText(String.format("₱%.2f", value));
-                            if (!getStyleClass().contains("amount-cell")) {
-                                getStyleClass().add("amount-cell");
-                            }
-                        }
+            protected void updateItem(Double value, boolean empty) {
+                super.updateItem(value, empty);
+                if (empty || value == null) {
+                    setText(null);
+                    getStyleClass().remove("amount-cell");
+                } else {
+                    setText(String.format("₱%.2f", value));
+                    if (!getStyleClass().contains("amount-cell")) {
+                        getStyleClass().add("amount-cell");
                     }
-                };
+                }
             }
         });
 
@@ -106,33 +116,42 @@ public class DashboardController {
         this.currentUser = user;
         sidebarUserLabel.setText(currentUser.getName());
         welcomeUserLabel.setText("Welcome, " + currentUser.getName());
-        loadDashboardData();
+        refreshSalesData();
     }
 
-    private void loadDashboardData() {
+    private void refreshSalesData() {
         if (currentUser == null) return;
 
-        // Load sales data
-        List<Sale> sales = DatabaseManager.getSalesForUser(currentUser.getId());
-        ObservableList<Sale> observableSales = FXCollections.observableArrayList(sales);
-
-        // Populate stats
-        double totalSales = sales.stream().mapToDouble(Sale::getAmount).sum();
-        long numSales = sales.size();
+        // 1. Load total sales data for stats
+        List<Sale> allSales = DatabaseManager.getSalesForUser(currentUser.getId());
+        double totalSales = allSales.stream().mapToDouble(Sale::getAmount).sum();
+        long numSales = allSales.size();
         double avgSale = (numSales > 0) ? totalSales / numSales : 0;
 
         totalSalesLabel.setText(String.format("₱%.2f", totalSales));
         numSalesLabel.setText(String.valueOf(numSales));
         avgSaleLabel.setText(String.format("₱%.2f", avgSale));
 
-        // Populate table
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("saleId"));
-        dateColumn.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
-        productColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
-        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-        amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
-        salesTableView.setItems(observableSales);
+        // 2. Remember current page, or default to 0
+        int currentPage = salesPagination.getCurrentPageIndex();
+
+        // 3. Re-setup pagination
+        int totalItems = DatabaseManager.getSalesCountForUser(currentUser.getId());
+        int pageCount = Math.max(1, (int) Math.ceil((double) totalItems / PAGE_SIZE));
+        salesPagination.setPageCount(pageCount);
+        salesPagination.setPageFactory(this::createPage);
+
+        // 4. Restore to the correct page
+        if (currentPage >= pageCount) {
+            currentPage = pageCount - 1;
+        }
+        salesPagination.setCurrentPageIndex(Math.max(0, currentPage));
+
+        // 5. Manually trigger loading for the current page if it's the same
+        // The page factory only runs on index *change*
+        loadSalesPage(salesPagination.getCurrentPageIndex());
     }
+
 
     private void setupActionsColumn() {
         Callback<TableColumn<Sale, Void>, TableCell<Sale, Void>> cellFactory = new Callback<>() {
@@ -182,6 +201,20 @@ public class DashboardController {
             }
         };
         actionsColumn.setCellFactory(cellFactory);
+    }
+
+    private Node createPage(int pageIndex) {
+        loadSalesPage(pageIndex);
+        // Wrap the table in a VBox to prevent it from resizing when the item count changes.
+        // The pagination control will manage this VBox, which holds the table at a consistent size.
+        return new VBox(salesTableView);
+    }
+
+    private void loadSalesPage(int pageIndex) {
+        int offset = pageIndex * PAGE_SIZE;
+        List<Sale> sales = DatabaseManager.getSalesForUserPaged(currentUser.getId(), PAGE_SIZE, offset);
+        ObservableList<Sale> observable = FXCollections.observableArrayList(sales);
+        salesTableView.setItems(observable);
     }
 
     private void handleViewSale(Sale sale) {
@@ -243,7 +276,7 @@ public class DashboardController {
             dialogStage.showAndWait();
 
             if (controller.isSaleUpdated()) {
-                loadDashboardData();
+                refreshSalesData();
                 Toast.show(toastContainer, "Sale updated successfully!");
             }
         } catch (IOException e) {
@@ -276,7 +309,7 @@ public class DashboardController {
 
             if (controller.isConfirmed()) {
                 DatabaseManager.deleteSale(sale.getSaleId());
-                loadDashboardData(); // Refresh the sales list
+                refreshSalesData();
                 Toast.show(toastContainer, "Sale deleted successfully!");
             }
         } catch (IOException e) {
@@ -311,7 +344,7 @@ public class DashboardController {
 
             // If a sale was added, refresh the dashboard
             if (controller.isSaleAdded()) {
-                loadDashboardData();
+                refreshSalesData();
                 Toast.show(toastContainer, "Sale added successfully!");
             }
 
@@ -346,7 +379,7 @@ public class DashboardController {
             dialogStage.showAndWait();
 
             // Refresh sales data in case product names changed
-            loadDashboardData();
+            refreshSalesData();
 
         } catch (IOException e) {
             e.printStackTrace();

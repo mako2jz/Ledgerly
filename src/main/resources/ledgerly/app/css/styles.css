@@ -358,6 +358,53 @@
     -fx-font-weight: bold;
 }
 
+.pagination > .pagination-control > .control-box > .toggle-button {
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: transparent;
+}
+
+.pagination > .pagination-control > .control-box > .toggle-button:selected {
+    -fx-background-color: #00A859;
+    -fx-text-fill: white;
+}
+
+.pagination > .pagination-control > .control-box > .toggle-button:hover {
+    -fx-background-color: #008F4A;
+    -fx-text-fill: white;
+}
+
+.pagination .left-arrow-button,
+.pagination .right-arrow-button {
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: transparent;
+}
+
+.pagination .left-arrow-button:hover,
+.pagination .right-arrow-button:hover {
+    -fx-background-color: #008F4A;
+    -fx-text-fill: white;
+}
+
+.pagination .left-arrow-button:pressed,
+.pagination .right-arrow-button:pressed {
+    -fx-background-color: #00A859;
+    -fx-text-fill: white;
+}
+
+.pagination .left-arrow,
+.pagination .right-arrow {
+    -fx-padding: 0.416667em; /* 5px */
+}
+
+.pagination .left-arrow-button:hover .left-arrow,
+.pagination .right-arrow-button:hover .right-arrow {
+    -fx-background-color: white;
+}
+
 /* ============================
    Scrollbar & Thumb
    ============================ */
@@ -388,7 +435,6 @@
 /* ============================
    Utilities / Misc
    ============================ */
-/* Compact, non-invasive table arrow */
 .dashboard-table .arrow {
     -fx-background-color: -app-white;
 }

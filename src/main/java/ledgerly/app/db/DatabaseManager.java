@@ -222,4 +222,48 @@ public class DatabaseManager {
             System.err.println("Error deleting product and updating sales: " + e.getMessage());
         }
     }
+
+    public static int getSalesCountForUser(int userId) {
+        String sql = "SELECT COUNT(*) AS cnt FROM sales WHERE user_id = ?";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("cnt");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error counting sales: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    public static List<Sale> getSalesForUserPaged(int userId, int limit, int offset) {
+        String sql = "SELECT s.sale_id, s.created_at, s.amount, s.description, COALESCE(p.product_name, 'Unknown Product') as product_name " +
+                "FROM sales s LEFT JOIN products p ON s.product_id = p.product_id " +
+                "WHERE s.user_id = ? ORDER BY s.created_at DESC LIMIT ? OFFSET ?";
+        List<Sale> sales = new ArrayList<>();
+        try (Connection conn = Database.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, limit);
+            pstmt.setInt(3, offset);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    sales.add(new Sale(
+                            rs.getInt("sale_id"),
+                            rs.getString("created_at"),
+                            rs.getDouble("amount"),
+                            rs.getString("description"),
+                            rs.getString("product_name")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching paged sales: " + e.getMessage());
+        }
+        return sales;
+    }
+
 }
