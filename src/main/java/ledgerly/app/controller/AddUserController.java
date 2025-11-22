@@ -21,9 +21,7 @@ public class AddUserController {
         createUserButton.setDisable(true);
 
         // Add a listener to the text field to enable/disable the button
-        usernameField.textProperty().addListener((observable, oldValue, newValue) -> {
-            createUserButton.setDisable(newValue.trim().isEmpty());
-        });
+        usernameField.textProperty().addListener((observable, oldValue, newValue) -> createUserButton.setDisable(newValue.trim().isEmpty()));
     }
 
     @FXML

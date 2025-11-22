@@ -79,8 +79,11 @@ public class AddSaleController {
                 productComboBox.setItems(filteredList);
             }
             // Show the dropdown with filtered results
-            if (!productComboBox.isShowing() && !newText.isEmpty()) {
-                productComboBox.show();
+            if (!productComboBox.isShowing()) {
+                assert newText != null;
+                if (!newText.isEmpty()) {
+                    productComboBox.show();
+                }
             }
         });
 

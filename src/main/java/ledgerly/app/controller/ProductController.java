@@ -24,7 +24,6 @@ import java.util.List;
 public class ProductController {
 
     private User currentUser;
-    private ObservableList<Product> products;
 
     @FXML
     private ListView<Product> productListView;
@@ -39,9 +38,7 @@ public class ProductController {
     public void initialize() {
         addProductButton.setDisable(true);
 
-        productNameField.textProperty().addListener((obs, old, val) -> {
-            addProductButton.setDisable(val.trim().isEmpty());
-        });
+        productNameField.textProperty().addListener((obs, old, val) -> addProductButton.setDisable(val.trim().isEmpty()));
 
         productListView.setCellFactory(param -> new ProductListCell(this::handleEditProduct, this::handleDeleteProduct));
 
@@ -58,7 +55,7 @@ public class ProductController {
 
     private void loadProducts() {
         List<Product> productList = DatabaseManager.getProductsForUser(currentUser.getId());
-        products = FXCollections.observableArrayList(productList);
+        ObservableList<Product> products = FXCollections.observableArrayList(productList);
         productListView.setItems(products);
     }
 

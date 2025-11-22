@@ -37,9 +37,15 @@ public class Toast {
         toast.setMouseTransparent(true);
         toast.setMaxWidth(Region.USE_PREF_SIZE);
 
-        toastContainer.getChildren().add(0, toast);
+        toastContainer.getChildren().addFirst(toast);
 
         // Show animation
+        SequentialTransition sequentialTransition = getSequentialTransition(toastContainer, toast);
+
+        sequentialTransition.play();
+    }
+
+    private static SequentialTransition getSequentialTransition(Pane toastContainer, Label toast) {
         TranslateTransition slideUp = new TranslateTransition(Duration.millis(400), toast);
         slideUp.setToY(0);
         FadeTransition fadeIn = new FadeTransition(Duration.millis(400), toast);
@@ -55,12 +61,10 @@ public class Toast {
         hideTransition.setOnFinished(e -> toastContainer.getChildren().remove(toast));
 
         // Sequence
-        SequentialTransition sequentialTransition = new SequentialTransition(
+        return new SequentialTransition(
                 showTransition,
                 new PauseTransition(Duration.seconds(3)),
                 hideTransition
         );
-
-        sequentialTransition.play();
     }
 }

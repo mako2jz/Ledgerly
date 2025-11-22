@@ -50,7 +50,7 @@
     </GridPane>
 
     <HBox spacing="10" alignment="CENTER">
-        <Button fx:id="cancelButton" text="Cancel" onAction="#handleCancel" styleClass="cancel-button"/>
+        <Button text="Cancel" onAction="#handleCancel" styleClass="cancel-button"/>
         <Button fx:id="confirmButton" text="Delete" onAction="#handleConfirm" styleClass="add-button"/>
     </HBox>
 </VBox>

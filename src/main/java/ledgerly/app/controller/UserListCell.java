@@ -12,14 +12,13 @@ public class UserListCell extends ListCell<User> {
     private final HBox content;
     private final Text initialsText;
     private final Label nameLabel;
-    private final StackPane avatarPane;
 
     public UserListCell() {
         super();
         initialsText = new Text();
         initialsText.getStyleClass().add("avatar-text");
 
-        avatarPane = new StackPane();
+        StackPane avatarPane = new StackPane();
         avatarPane.getStyleClass().add("avatar-circle");
         avatarPane.setPrefSize(40, 40);
         avatarPane.getChildren().add(initialsText);

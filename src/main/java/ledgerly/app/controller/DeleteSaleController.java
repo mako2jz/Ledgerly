@@ -13,8 +13,6 @@ public class DeleteSaleController {
     @FXML
     private Button confirmButton;
     @FXML
-    private Button cancelButton;
-    @FXML
     private Label productNameLabel;
     @FXML
     private Label saleAmountLabel;
@@ -25,11 +23,9 @@ public class DeleteSaleController {
     @FXML
     private Label titleLabel;
 
-    private Sale saleToDelete;
     private boolean confirmed = false;
 
     public void initData(Sale sale) {
-        this.saleToDelete = sale;
         if (sale != null) {
             titleLabel.setText("Delete Sale");
             saleDetailsLabel.setText("Are you sure you want to delete this sale?");

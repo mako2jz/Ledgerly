@@ -12,8 +12,6 @@ public class DeleteProductController {
     private Label confirmationLabel;
     @FXML
     private Button confirmButton;
-    @FXML
-    private Button cancelButton;
 
     private boolean confirmed = false;
 

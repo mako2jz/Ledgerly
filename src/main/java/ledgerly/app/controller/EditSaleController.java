@@ -86,8 +86,11 @@ public class EditSaleController {
             });
 
             // Show the dropdown with filtered results
-            if (!productComboBox.isShowing() && !newText.isEmpty()) {
-                productComboBox.show();
+            if (!productComboBox.isShowing()) {
+                assert newText != null;
+                if (!newText.isEmpty()) {
+                    productComboBox.show();
+                }
             }
         });
 
@@ -140,14 +143,10 @@ public class EditSaleController {
         loadProducts();
 
         // Find and select the product associated with the sale
-        Product saleProduct = allProducts.stream()
+        allProducts.stream()
                 .filter(p -> Objects.equals(p.getProductName(), sale.getProductName()))
-                .findFirst()
-                .orElse(null);
+                .findFirst().ifPresent(saleProduct -> productComboBox.getSelectionModel().select(saleProduct));
 
-        if (saleProduct != null) {
-            productComboBox.getSelectionModel().select(saleProduct);
-        }
     }
 
     private void loadProducts() {

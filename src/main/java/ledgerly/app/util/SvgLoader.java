@@ -48,7 +48,7 @@ public class SvgLoader {
 
             // Regex to find viewBox for scaling
             double originalWidth = 16; // Default SVG size
-            Pattern vbPattern = Pattern.compile("(?i)viewBox\\s*=\\s*['\"]([-\\d\\.]+)\\s+([-\\d\\.]+)\\s+([-\\d\\.]+)\\s+([-\\d\\.]+)['\"]");
+            Pattern vbPattern = Pattern.compile("(?i)viewBox\\s*=\\s*['\"]([-\\d.]+)\\s+([-\\d.]+)\\s+([-\\d.]+)\\s+([-\\d.]+)['\"]");
             Matcher vbMatcher = vbPattern.matcher(svg);
             if (vbMatcher.find()) {
                 try {

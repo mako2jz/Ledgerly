@@ -19,8 +19,6 @@ public class ProductListCell extends ListCell<Product> {
 
     private final HBox content;
     private final Label nameLabel;
-    private final Button editButton;
-    private final Button deleteButton;
     private final Consumer<Product> editHandler;
     private final Consumer<Product> deleteHandler;
 
@@ -32,7 +30,7 @@ public class ProductListCell extends ListCell<Product> {
         nameLabel = new Label();
         nameLabel.getStyleClass().add("user-name-label");
 
-        editButton = new Button();
+        Button editButton = new Button();
         editButton.getStyleClass().add("edit-icon-button");
         editButton.setFocusTraversable(false);
         editButton.setOnAction(e -> {
@@ -40,7 +38,7 @@ public class ProductListCell extends ListCell<Product> {
             if (p != null && this.editHandler != null) this.editHandler.accept(p);
         });
 
-        deleteButton = new Button();
+        Button deleteButton = new Button();
         deleteButton.getStyleClass().add("delete-icon-button");
         deleteButton.setFocusTraversable(false);
         deleteButton.setOnAction(e -> {
