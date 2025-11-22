@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -17,6 +18,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import ledgerly.app.Main;
 import ledgerly.app.db.DatabaseManager;
 import ledgerly.app.model.User;
 import ledgerly.app.util.Toast;
@@ -24,6 +26,7 @@ import ledgerly.app.util.Toast;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 
 public class MainController {
 
@@ -94,6 +97,7 @@ public class MainController {
 
                 Stage dashboardStage = new Stage();
                 dashboardStage.setTitle("Ledgerly Dashboard");
+                dashboardStage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("/ledgerly/app/images/Ledgerly.png"))));
                 Scene scene = new Scene(root);
 
                 URL cssUrl = getClass().getResource("/ledgerly/app/css/styles.css");

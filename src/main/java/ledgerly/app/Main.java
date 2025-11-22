@@ -5,9 +5,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 
 public class Main extends Application {
 
@@ -29,6 +31,7 @@ public class Main extends Application {
         scene.getStylesheets().add(cssUrl.toExternalForm());
 
         primaryStage.setTitle("Ledgerly - Login");
+        primaryStage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("/ledgerly/app/images/Ledgerly.png"))));
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
