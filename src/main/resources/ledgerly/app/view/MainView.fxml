@@ -6,6 +6,8 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
@@ -16,7 +18,9 @@
         <padding>
             <Insets top="60" right="50" bottom="50" left="50"/>
         </padding>
-
+        <ImageView fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true">
+            <Image url="@../images/Ledgerly.png" />
+        </ImageView>
         <Label fx:id="titleLabel" text="Welcome to Ledgerly" styleClass="title-label"/>
         <Label text="Select your profile to continue, or create a new one to start" styleClass="subtitle-label">
             <VBox.margin>
@@ -31,6 +35,7 @@
                 <Insets top="20"/>
             </VBox.margin>
         </Button>
+        <Label text="Copyright © 2025 Ledgerly All rights reserved." styleClass="footer-label"/>
     </VBox>
 
     <!-- Replaced single label with a VBox container to hold multiple toast Labels -->

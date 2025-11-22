@@ -78,6 +78,11 @@
     -fx-text-fill: -app-white;
 }
 
+.footer-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: -app-muted;
+}
+
 /* ============================
    Containers & Panels
    ============================ */
