@@ -323,7 +323,6 @@
     -fx-padding: 8 10 8 10;
 }
 
-.dashboard-table .column-header:hover,
 .dashboard-table .column-header .label:hover {
     -fx-background-color: -app-accent-dark;
 }

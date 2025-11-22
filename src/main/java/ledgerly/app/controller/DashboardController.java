@@ -120,6 +120,42 @@ public class DashboardController {
             toastContainer.setPickOnBounds(false);
             toastContainer.setMaxWidth(Region.USE_PREF_SIZE);
         }
+
+        for (TableColumn<?, ?> col : salesTableView.getColumns()) {
+            col.setResizable(false);
+        }
+
+        salesTableView.getColumns().forEach(col ->
+                col.setReorderable(false)
+        );
+
+        // Set column widths
+        idColumn.setPrefWidth(100);
+        dateColumn.setPrefWidth(200);
+        amountColumn.setPrefWidth(150);
+        actionsColumn.setPrefWidth(120);
+
+        // Bind remaining width to product and description columns
+        productColumn.prefWidthProperty().bind(
+                salesTableView.widthProperty()
+                        .subtract(idColumn.getWidth())
+                        .subtract(dateColumn.getWidth())
+                        .subtract(amountColumn.getWidth())
+                        .subtract(actionsColumn.getWidth())
+                        .subtract(2) // Account for borders/padding
+                        .multiply(0.45)
+        );
+
+        descriptionColumn.prefWidthProperty().bind(
+                salesTableView.widthProperty()
+                        .subtract(idColumn.getWidth())
+                        .subtract(dateColumn.getWidth())
+                        .subtract(amountColumn.getWidth())
+                        .subtract(actionsColumn.getWidth())
+                        .subtract(2) // Account for borders/padding
+                        .multiply(0.55)
+        );
+
     }
 
     public void initData(User user) {
