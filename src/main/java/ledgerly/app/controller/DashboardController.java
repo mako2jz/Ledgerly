@@ -1,5 +1,9 @@
 package ledgerly.app.controller;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.Interpolator;
+import javafx.animation.ParallelTransition;
+import javafx.animation.TranslateTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,6 +22,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import ledgerly.app.Main;
 import ledgerly.app.db.DatabaseManager;
 import ledgerly.app.model.Sale;
@@ -32,10 +37,12 @@ import static ledgerly.app.util.SvgLoader.createSvgGraphic;
 
 public class DashboardController {
 
-    private static final int PAGE_SIZE = 10; // Number of items per page
+    private static final int PAGE_SIZE = 12; // Number of items per page
 
     private User currentUser;
 
+    @FXML
+    private Label ledgerlyDashboard;
     @FXML
     private Label sidebarUserLabel;
     @FXML
@@ -105,6 +112,9 @@ public class DashboardController {
         });
 
         setupActionsColumn();
+
+        applySlideInAnimation(welcomeUserLabel);
+        applySlideInAnimation(ledgerlyDashboard);
 
         if (toastContainer != null) {
             toastContainer.setPickOnBounds(false);
@@ -438,6 +448,27 @@ public class DashboardController {
             new Main().start(mainStage);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void applySlideInAnimation(Node node) {
+        if (node != null) {
+            node.setOpacity(0);
+            node.setTranslateX(-20);
+
+            FadeTransition fade = new FadeTransition(Duration.millis(400), node);
+            fade.setFromValue(0);
+            fade.setToValue(1);
+            fade.setInterpolator(Interpolator.EASE_BOTH);
+
+            TranslateTransition slide = new TranslateTransition(Duration.millis(400), node);
+            slide.setFromX(-20);
+            slide.setToX(0);
+            slide.setInterpolator(Interpolator.EASE_BOTH);
+
+            ParallelTransition animation = new ParallelTransition(fade, slide);
+            animation.setDelay(Duration.millis(300));
+            animation.play();
         }
     }
 

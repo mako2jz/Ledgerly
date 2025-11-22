@@ -3,6 +3,7 @@ module Ledgerly {
     requires javafx.fxml;
     requires java.sql;
     requires javafx.graphics;
+    requires javafx.base;
 
     opens ledgerly.app.controller to javafx.fxml;
     opens ledgerly.app.view to javafx.fxml;

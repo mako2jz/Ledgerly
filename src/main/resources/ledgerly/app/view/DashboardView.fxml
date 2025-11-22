@@ -20,7 +20,7 @@
                     <Insets top="20" right="20" bottom="20" left="20"/>
                 </padding>
 
-                <Label text="Ledgerly Dashboard" styleClass="title-label-alt" wrapText="true"/>
+                <Label fx:id="ledgerlyDashboard" text="Ledgerly Dashboard" styleClass="title-label-alt" wrapText="true"/>
                 <Label fx:id="sidebarUserLabel" text="{user}" styleClass="subtitle-label-alt"/>
 
                 <Separator/>
@@ -71,7 +71,7 @@
                         <Pane HBox.hgrow="ALWAYS"/>
                         <Button fx:id="addSaleButton" text="+ Add Sale" onAction="#handleAddSale" styleClass="add-button"/>
                     </HBox>
-                    <TableView fx:id="salesTableView" VBox.vgrow="ALWAYS" styleClass="dashboard-table">
+                    <TableView fx:id="salesTableView" VBox.vgrow="ALWAYS" styleClass="dashboard-table" prefHeight="575">
                         <columns>
                             <TableColumn fx:id="idColumn" text="Transaction No." prefWidth="75"/>
                             <TableColumn fx:id="dateColumn" text="Date" prefWidth="125"/>
