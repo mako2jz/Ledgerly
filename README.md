@@ -36,6 +36,7 @@ Ledgerly is a lightweight JavaFX-based desktop ledger for small businesses. It p
 ### Development Tools
 - **Maven**
 - **Git**
+- **Scene Builder**
 
 ## Screenshots
 
