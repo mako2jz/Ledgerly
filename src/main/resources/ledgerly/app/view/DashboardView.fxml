@@ -69,9 +69,10 @@
 
                 <!-- Sales History Table -->
                 <VBox spacing="10" VBox.vgrow="ALWAYS">
-                    <HBox alignment="CENTER_LEFT">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
                         <Label text="Sales History" styleClass="subtitle-label"/>
                         <Pane HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="exportButton" text="Export to XLSX" onAction="#handleExportAction" styleClass="add-button"/>
                         <Button fx:id="addSaleButton" text="+ Add Sale" onAction="#handleAddSale" styleClass="add-button"/>
                     </HBox>
                     <TableView fx:id="salesTableView" VBox.vgrow="ALWAYS" styleClass="dashboard-table" prefHeight="575">

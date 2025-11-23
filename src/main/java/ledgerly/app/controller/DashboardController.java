@@ -18,6 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -28,7 +29,15 @@ import ledgerly.app.db.DatabaseManager;
 import ledgerly.app.model.Sale;
 import ledgerly.app.model.User;
 import ledgerly.app.util.Toast;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -72,6 +81,8 @@ public class DashboardController {
     @FXML
     private Button addSaleButton;
     @FXML
+    private Button exportButton;
+    @FXML
     private Button productsButton;
     @FXML
     private Button salesReportButton;
@@ -88,6 +99,7 @@ public class DashboardController {
         productsButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/basket.svg", 16, Color.web("white")));
         deleteUserButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/trash.svg", 16, Color.web("white")));
         salesReportButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/bar-chart-line.svg", 16, Color.web("white")));
+        exportButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/xlsx.svg", 14, Color.web("white")));
         logoutButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/arrow-bar-left.svg", 16, Color.web("#333333")));
 
         // Set up table columns
@@ -363,6 +375,63 @@ public class DashboardController {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleExportAction() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Excel File");
+        fileChooser.setInitialFileName("Ledgerly_Sales_Export.xlsx");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Workbook", "*.xlsx"));
+        File file = fileChooser.showSaveDialog(exportButton.getScene().getWindow());
+
+        if (file != null) {
+            try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+                XSSFSheet sheet = workbook.createSheet("Sales");
+
+                // Header Font
+                Font headerFont = workbook.createFont();
+                headerFont.setBold(true);
+                CellStyle headerStyle = workbook.createCellStyle();
+                headerStyle.setFont(headerFont);
+
+                // Header Row
+                Row headerRow = sheet.createRow(0);
+                String[] columns = {"Date", "Product", "Description", "Amount"};
+                for (int i = 0; i < columns.length; i++) {
+                    Cell cell = headerRow.createCell(i);
+                    cell.setCellValue(columns[i]);
+                    cell.setCellStyle(headerStyle);
+                }
+
+                // Data Rows
+                int rowNum = 1;
+                List<Sale> salesToExport = salesTableView.getItems();
+
+                for (Sale sale : salesToExport) {
+                    Row row = sheet.createRow(rowNum++);
+                    row.createCell(0).setCellValue(sale.getCreatedAt());
+                    row.createCell(1).setCellValue(sale.getProductName());
+                    row.createCell(2).setCellValue(sale.getDescription());
+                    row.createCell(3).setCellValue(sale.getAmount());
+                }
+
+                // Auto-size columns
+                for (int i = 0; i < columns.length; i++) {
+                    sheet.autoSizeColumn(i);
+                }
+
+                // Write to file
+                try (FileOutputStream fileOut = new FileOutputStream(file)) {
+                    workbook.write(fileOut);
+                }
+
+                Toast.show(toastContainer, "Data exported successfully!");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
