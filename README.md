@@ -56,6 +56,10 @@ Ledgerly is a lightweight JavaFX-based desktop ledger for small businesses. It p
 
 <img src="public/screenshots/Screenshot%202025-11-22%20151640.png" alt="Delete Sale" width="800"/>
 
+<img src="public/screenshots/Screenshot%202025-11-23%20214012.png" alt="View Product Report" width="800"/>
+
+<img src="public/screenshots/Screenshot%202025-11-23%20214042.png" alt="Export to XLSX" width="800"/>
+
 <img src="public/screenshots/Screenshot%202025-11-22%20151711.png" alt="Delete Profile" width="800"/>
 
 
