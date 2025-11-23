@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ledgerly.app.controller.SalesReportController"
+      alignment="TOP_CENTER" spacing="15"
+      styleClass="modal-root" prefWidth="600" prefHeight="650">
+
+    <padding>
+        <Insets top="20" right="30" bottom="30" left="30"/>
+    </padding>
+
+    <Label text="Sales Report by Product" styleClass="title-label-edit"/>
+
+    <TableView fx:id="reportTableView" styleClass="dashboard-table" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="productColumn" text="Product" prefWidth="250"/>
+            <TableColumn fx:id="countColumn" text="Sales Count" prefWidth="120"/>
+            <TableColumn fx:id="totalValueColumn" text="Total Value" prefWidth="150"/>
+        </columns>
+    </TableView>
+
+    <Pagination fx:id="pagination" pageCount="1" styleClass="pagination"/>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <VBox.margin>
+            <Insets top="10"/>
+        </VBox.margin>
+        <Label fx:id="grandTotalLabel" styleClass="subtitle-label"/>
+    </HBox>
+
+    <HBox alignment="CENTER" spacing="10">
+        <VBox.margin>
+            <Insets top="15"/>
+        </VBox.margin>
+        <Button fx:id="closeButton" text="Close" onAction="#handleClose" styleClass="cancel-button"/>
+    </HBox>
+
+</VBox>

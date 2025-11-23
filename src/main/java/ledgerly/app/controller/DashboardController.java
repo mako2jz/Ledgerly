@@ -74,6 +74,8 @@ public class DashboardController {
     @FXML
     private Button productsButton;
     @FXML
+    private Button salesReportButton;
+    @FXML
     private Button deleteUserButton;
     @FXML
     private Button logoutButton;
@@ -85,6 +87,7 @@ public class DashboardController {
         // Set up action buttons' graphics
         productsButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/basket.svg", 16, Color.web("white")));
         deleteUserButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/trash.svg", 16, Color.web("white")));
+        salesReportButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/bar-chart-line.svg", 16, Color.web("white")));
         logoutButton.setGraphic(createSvgGraphic("/ledgerly/app/svg/arrow-bar-left.svg", 16, Color.web("#333333")));
 
         // Set up table columns
@@ -412,6 +415,39 @@ public class DashboardController {
             dialogStage.setTitle("Manage Products");
             dialogStage.initModality(Modality.APPLICATION_MODAL);
             dialogStage.initOwner(productsButton.getScene().getWindow());
+            dialogStage.initStyle(StageStyle.UNDECORATED);
+
+            Scene scene = new Scene(root);
+            URL cssUrl = getClass().getResource("/ledgerly/app/css/styles.css");
+            if (cssUrl != null) {
+                scene.getStylesheets().add(cssUrl.toExternalForm());
+            }
+
+            dialogStage.setScene(scene);
+            dialogStage.setResizable(false);
+            dialogStage.showAndWait();
+
+            // Refresh sales data in case product names changed
+            refreshSalesData();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleSalesReportButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ledgerly/app/view/SalesReportView.fxml"));
+            Parent root = loader.load();
+
+            SalesReportController controller = loader.getController();
+            controller.initData(currentUser);
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Sales Report");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(salesReportButton.getScene().getWindow());
             dialogStage.initStyle(StageStyle.UNDECORATED);
 
             Scene scene = new Scene(root);

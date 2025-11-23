@@ -27,6 +27,9 @@
 
                 <Button fx:id="productsButton" text="Products" onAction="#handleProductsButton"
                         maxWidth="Infinity" alignment="BASELINE_LEFT" styleClass="sidebar-button"/>
+                <Button fx:id="salesReportButton" text="Sales Report" onAction="#handleSalesReportButton"
+                        maxWidth="Infinity" alignment="BASELINE_LEFT" styleClass="sidebar-button"/>
+
 
                 <!-- Spacer to push logout to bottom -->
                 <Pane VBox.vgrow="ALWAYS"/>

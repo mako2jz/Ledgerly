@@ -1,6 +1,7 @@
 package ledgerly.app.db;
 
 import ledgerly.app.model.Product;
+import ledgerly.app.model.ProductSalesReport;
 import ledgerly.app.model.Sale;
 import ledgerly.app.model.User;
 import java.sql.*;
@@ -265,5 +266,44 @@ public class DatabaseManager {
         }
         return sales;
     }
+
+// In ledgerly.app.db.DatabaseManager.java
+
+    public static List<ProductSalesReport> getProductSalesReport(int userId) {
+        List<ProductSalesReport> reportData = new ArrayList<>();
+        String sql = "SELECT " +
+                "  p.product_name, " +
+                "  COALESCE(COUNT(s.sale_id), 0) AS sales_count, " +
+                "  COALESCE(SUM(s.amount), 0.0) AS total_value " +
+                "FROM " +
+                "  products p " +
+                "LEFT JOIN " +
+                "  sales s ON p.product_id = s.product_id AND s.user_id = p.user_id " +
+                "WHERE " +
+                "  p.user_id = ? " +
+                "GROUP BY " +
+                "  p.product_id, p.product_name " +
+                "ORDER BY " +
+                "  p.product_name;";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                reportData.add(new ProductSalesReport(
+                        rs.getString("product_name"),
+                        rs.getInt("sales_count"),
+                        rs.getDouble("total_value")
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return reportData;
+    }
+
 
 }
