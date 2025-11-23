@@ -21,6 +21,7 @@ Ledgerly is a lightweight JavaFX-based desktop ledger for small businesses. It p
 - **Product catalog** — Store and select products at the click of a button.
 - **Sales recording** — Create and list sales entries with amount, description, product, and timestamp.
 - **Dashboard table** — Clear overview of sales with sorting and filtering.
+- **Sales reports** — Generate a sales report overview and export to XLSX format.
 - **Small footprint** — Single-file database, desktop first, no server required.
 
 ## 🚀 Tech Stack
