@@ -39,7 +39,7 @@ Ledgerly is a lightweight JavaFX-based desktop ledger for small businesses. It p
 - **Scene Builder**
 - **IntelliJ IDEA**
 
-## Screenshots
+## 📸 Screenshots
 
 <img src="public/screenshots/Screenshot%202025-11-22%20151506.png" alt="User Select" width="800"/>
 
