@@ -41,29 +41,27 @@ Ledgerly is a lightweight JavaFX-based desktop ledger for small businesses. It p
 
 ## Screenshots
 
-<img src="public/screenshots/Screenshot%202025-11-22%20151506.png" alt="User Select" width="800"/>
+<img src="public/screenshots/1.png" alt="User Select" width="800"/>
 
-<img src="public/screenshots/Screenshot%202025-11-22%20151523.png" alt="Dashboard Overview" width="800"/>
+<img src="public/screenshots/2.png" alt="Dashboard Overview" width="800"/>
 
-<img src="public/screenshots/Screenshot%202025-11-22%20151549.png" alt="Manage Products" width="800"/>
+<img src="public/screenshots/3.png" alt="Manage Products" width="800"/>
 
-<img src="public/screenshots/Screenshot%202025-11-22%20151653.png" alt="Edit Product" width="800"/>
+<img src="public/screenshots/4.png" alt="Edit Product" width="800"/>
 
-<img src="public/screenshots/Screenshot%202025-11-22%20151603.png" alt="Add New Sale" width="800"/>
+<img src="public/screenshots/5.png" alt="Sales Report" width="800"/>
 
-<img src="public/screenshots/Screenshot%202025-11-22%20151613.png" alt="Sales Table View" width="800"/>
+<img src="public/screenshots/6.png" alt="Add New Sale" width="800"/>
 
-<img src="public/screenshots/Screenshot%202025-11-22%20151622.png" alt="View Sale" width="800"/>
+<img src="public/screenshots/7.png" alt="Export to XLSX" width="800"/>
 
-<img src="public/screenshots/Screenshot%202025-11-22%20151631.png" alt="Edit Sale" width="800"/>
+<img src="public/screenshots/8.png" alt="Delete Profile" width="800"/>
 
-<img src="public/screenshots/Screenshot%202025-11-22%20151640.png" alt="Delete Sale" width="800"/>
+<img src="public/screenshots/9.png" alt="View Sale" width="800"/>
 
-<img src="public/screenshots/Screenshot%202025-11-23%20214012.png" alt="View Product Report" width="800"/>
+<img src="public/screenshots/10.png" alt="Edit Sale" width="800"/>
 
-<img src="public/screenshots/Screenshot%202025-11-23%20214042.png" alt="Export to XLSX" width="800"/>
-
-<img src="public/screenshots/Screenshot%202025-11-22%20151711.png" alt="Delete Profile" width="800"/>
+<img src="public/screenshots/11.png" alt="Delete Sale" width="800"/>
 
 
 ## 📦 Installation
