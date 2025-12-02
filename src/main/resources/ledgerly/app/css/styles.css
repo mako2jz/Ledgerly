@@ -278,7 +278,6 @@
     -fx-background-color: -app-cell-hover;
 }
 
-.list-cell:pressed,
 .list-cell:filled:pressed {
     -fx-background-color: -app-pressed;
     -fx-background-radius: 10;
